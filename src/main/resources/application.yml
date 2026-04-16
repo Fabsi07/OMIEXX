@@ -28,3 +28,6 @@ ceosim:
   admin:
     # Komma-getrennte Discord-IDs mit Admin-Rechten
     discord-ids: ${ADMIN_DISCORD_IDS:}
+  channels:
+    leaderboard: ${LEADERBOARD_CHANNEL_ID:}
+    event-log:   ${EVENT_LOG_CHANNEL_ID:}

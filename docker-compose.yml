@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ceosim-db
+    environment:
+      POSTGRES_DB:       ceosim
+      POSTGRES_USER:     ceosim
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - ceosim-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ceosim"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    build: .
+    container_name: ceosim-bot
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DISCORD_TOKEN:        ${DISCORD_TOKEN}
+      DB_URL:               jdbc:postgresql://db:5432/ceosim
+      DB_USER:              ceosim
+      DB_PASSWORD:          secret
+      TICK_INTERVAL_MS:     ${TICK_INTERVAL_MS:-21600000}
+      ADMIN_DISCORD_IDS:    ${ADMIN_DISCORD_IDS:-}
+      LEADERBOARD_CHANNEL_ID: ${LEADERBOARD_CHANNEL_ID:-}
+      EVENT_LOG_CHANNEL_ID:   ${EVENT_LOG_CHANNEL_ID:-}
+    restart: unless-stopped
+
+volumes:
+  ceosim-data:

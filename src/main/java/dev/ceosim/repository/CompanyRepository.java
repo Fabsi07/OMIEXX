@@ -24,5 +24,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c FROM Company c WHERE c.deletedAt IS NULL ORDER BY c.valuation DESC")
     List<Company> findAllActiveOrderByValuation();
 
+    /** Firmen deren Pause abgelaufen ist */
+    @Query("SELECT c FROM Company c WHERE c.deletedAt IS NULL AND c.paused = true AND c.pauseUntil < CURRENT_TIMESTAMP")
+    List<Company> findAllPausedAndExpired();
+
     boolean existsByPlayerDiscordIdAndDeletedAtIsNull(String discordId);
 }

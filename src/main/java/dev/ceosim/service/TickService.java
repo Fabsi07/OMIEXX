@@ -37,6 +37,7 @@ public class TickService {
     private final EventService       eventService;
     private final NpcService         npcService;
     private final dev.ceosim.service.achievement.AchievementService achievementService;
+    private final WeeklyScheduler    weeklyScheduler;
 
     private static final Random RANDOM = new Random();
 
@@ -52,6 +53,9 @@ public class TickService {
 
         // NPCs wachsen lassen
         npcService.tickAllNpcs();
+
+        // Abgelaufene Pausen aufheben
+        weeklyScheduler.unpauseExpired();
 
         for (Company company : companies) {
             try {

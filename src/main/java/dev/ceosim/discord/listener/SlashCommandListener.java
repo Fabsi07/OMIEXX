@@ -12,27 +12,29 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SlashCommandListener extends ListenerAdapter {
 
-    private final StartCommand       startCommand;
-    private final ReportCommand      reportCommand;
-    private final HelpCommand        helpCommand;
-    private final TeamCommand        teamCommand;
-    private final MarketCommand      marketCommand;
-    private final HireCommand        hireCommand;
-    private final FireCommand        fireCommand;
-    private final ProjectCommand     projectCommand;
-    private final LogCommand         logCommand;
-    private final AcquireCommand     acquireCommand;
-    private final FundraiseCommand   fundraiseCommand;
-    private final ExpandCommand      expandCommand;
-    private final ResearchCommand    researchCommand;
-    private final SabotageCommand    sabotageCommand;
-    private final ProfileCommand     profileCommand;
-    private final PrestigeCommand    prestigeCommand;
-    private final LegacyCommand      legacyCommand;
+    private final StartCommand        startCommand;
+    private final ReportCommand       reportCommand;
+    private final HelpCommand         helpCommand;
+    private final TeamCommand         teamCommand;
+    private final MarketCommand       marketCommand;
+    private final HireCommand         hireCommand;
+    private final FireCommand         fireCommand;
+    private final ProjectCommand      projectCommand;
+    private final LogCommand          logCommand;
+    private final AcquireCommand      acquireCommand;
+    private final FundraiseCommand    fundraiseCommand;
+    private final ExpandCommand       expandCommand;
+    private final ResearchCommand     researchCommand;
+    private final SabotageCommand     sabotageCommand;
+    private final ProfileCommand      profileCommand;
+    private final PrestigeCommand     prestigeCommand;
+    private final LegacyCommand       legacyCommand;
     private final AchievementsCommand achievementsCommand;
-    private final InvestCommand      investCommand;
-    private final PrCommand          prCommand;
-    private final AdminCommand       adminCommand;
+    private final InvestCommand       investCommand;
+    private final PrCommand           prCommand;
+    private final PauseCommand        pauseCommand;
+    private final NotifyCommand       notifyCommand;
+    private final AdminCommand        adminCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -41,28 +43,40 @@ public class SlashCommandListener extends ListenerAdapter {
 
         try {
             switch (cmd) {
+                // Phase 1 — Foundation
                 case "start"        -> startCommand.handle(event);
                 case "report"       -> reportCommand.handle(event);
                 case "help"         -> helpCommand.handle(event);
+                // Phase 2 — Core Loop
                 case "log"          -> logCommand.handle(event);
                 case "market"       -> marketCommand.handle(event);
+                case "notify"       -> notifyCommand.handle(event);
+                case "pause"        -> pauseCommand.handle(event);
+                case "invest"       -> investCommand.handle(event);
+                case "pr"           -> prCommand.handle(event);
+                // Phase 3 — Mitarbeiter
                 case "team"         -> teamCommand.handle(event);
                 case "hire"         -> hireCommand.handle(event);
                 case "fire"         -> fireCommand.handle(event);
+                // Phase 4 — Projekte
                 case "project"      -> projectCommand.handle(event);
+                // Phase 5 — NPC-Welt
                 case "acquire"      -> acquireCommand.handle(event);
                 case "fundraise"    -> fundraiseCommand.handle(event);
                 case "expand"       -> expandCommand.handle(event);
-                case "research"     -> researchCommand.handle(event);
-                case "sabotage"     -> sabotageCommand.handle(event);
                 case "profile"      -> profileCommand.handle(event);
+                // Phase 6 — Tech-Tree
+                case "research"     -> researchCommand.handle(event);
+                // Phase 7 — PvP
+                case "sabotage"     -> sabotageCommand.handle(event);
+                // Phase 8 — Prestige
                 case "prestige"     -> prestigeCommand.handle(event);
                 case "legacy"       -> legacyCommand.handle(event);
+                // Phase 9 — Polish
                 case "achievements" -> achievementsCommand.handle(event);
-                case "invest"       -> investCommand.handle(event);
-                case "pr"           -> prCommand.handle(event);
                 case "admin"        -> adminCommand.handle(event);
-                default -> event.reply("⚙️ **/" + cmd + "** kommt bald.")
+
+                default -> event.reply("⚙️ **/" + cmd + "** ist noch nicht implementiert.")
                         .setEphemeral(true).queue();
             }
         } catch (Exception e) {
