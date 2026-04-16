@@ -25,3 +25,6 @@ ceosim:
   tick:
     # 6h = 21600000ms | Für Dev: TICK_INTERVAL_MS=60000
     interval-ms: ${TICK_INTERVAL_MS:21600000}
+  admin:
+    # Komma-getrennte Discord-IDs mit Admin-Rechten
+    discord-ids: ${ADMIN_DISCORD_IDS:}

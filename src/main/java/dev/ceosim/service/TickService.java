@@ -36,6 +36,7 @@ public class TickService {
     private final EmployeeRepository employeeRepo;
     private final EventService       eventService;
     private final NpcService         npcService;
+    private final dev.ceosim.service.achievement.AchievementService achievementService;
 
     private static final Random RANDOM = new Random();
 
@@ -128,6 +129,9 @@ public class TickService {
         }
 
         companyRepo.save(company);
+
+        // Achievement-Check
+        achievementService.checkAndUnlock(company);
 
         // Tick-Event loggen
         eventService.log(company, "tick_processed",

@@ -12,48 +12,57 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SlashCommandListener extends ListenerAdapter {
 
-    private final StartCommand    startCommand;
-    private final ReportCommand   reportCommand;
-    private final HelpCommand     helpCommand;
-    private final TeamCommand     teamCommand;
-    private final MarketCommand   marketCommand;
-    private final HireCommand     hireCommand;
-    private final FireCommand     fireCommand;
-    private final ProjectCommand  projectCommand;
-    private final LogCommand      logCommand;
-    private final AcquireCommand  acquireCommand;
-    private final FundraiseCommand fundraiseCommand;
-    private final ExpandCommand   expandCommand;
-    private final ResearchCommand researchCommand;
+    private final StartCommand       startCommand;
+    private final ReportCommand      reportCommand;
+    private final HelpCommand        helpCommand;
+    private final TeamCommand        teamCommand;
+    private final MarketCommand      marketCommand;
+    private final HireCommand        hireCommand;
+    private final FireCommand        fireCommand;
+    private final ProjectCommand     projectCommand;
+    private final LogCommand         logCommand;
+    private final AcquireCommand     acquireCommand;
+    private final FundraiseCommand   fundraiseCommand;
+    private final ExpandCommand      expandCommand;
+    private final ResearchCommand    researchCommand;
+    private final SabotageCommand    sabotageCommand;
+    private final ProfileCommand     profileCommand;
+    private final PrestigeCommand    prestigeCommand;
+    private final LegacyCommand      legacyCommand;
+    private final AchievementsCommand achievementsCommand;
+    private final InvestCommand      investCommand;
+    private final PrCommand          prCommand;
+    private final AdminCommand       adminCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         String cmd = event.getName();
-        log.debug("Command /{} von {} ({})", cmd, event.getUser().getName(), event.getUser().getId());
+        log.debug("/{} von {}", cmd, event.getUser().getName());
 
         try {
             switch (cmd) {
-                // Phase 1
-                case "start"     -> startCommand.handle(event);
-                case "report"    -> reportCommand.handle(event);
-                case "help"      -> helpCommand.handle(event);
-                // Phase 2
-                case "log"       -> logCommand.handle(event);
-                case "market"    -> marketCommand.handle(event);
-                // Phase 3
-                case "team"      -> teamCommand.handle(event);
-                case "hire"      -> hireCommand.handle(event);
-                case "fire"      -> fireCommand.handle(event);
-                // Phase 4
-                case "project"   -> projectCommand.handle(event);
-                // Phase 5
-                case "acquire"   -> acquireCommand.handle(event);
-                case "fundraise" -> fundraiseCommand.handle(event);
-                case "expand"    -> expandCommand.handle(event);
-                // Phase 6
-                case "research"  -> researchCommand.handle(event);
-
-                default -> event.reply("⚙️ **/" + cmd + "** kommt in einer der nächsten Phasen.")
+                case "start"        -> startCommand.handle(event);
+                case "report"       -> reportCommand.handle(event);
+                case "help"         -> helpCommand.handle(event);
+                case "log"          -> logCommand.handle(event);
+                case "market"       -> marketCommand.handle(event);
+                case "team"         -> teamCommand.handle(event);
+                case "hire"         -> hireCommand.handle(event);
+                case "fire"         -> fireCommand.handle(event);
+                case "project"      -> projectCommand.handle(event);
+                case "acquire"      -> acquireCommand.handle(event);
+                case "fundraise"    -> fundraiseCommand.handle(event);
+                case "expand"       -> expandCommand.handle(event);
+                case "research"     -> researchCommand.handle(event);
+                case "sabotage"     -> sabotageCommand.handle(event);
+                case "profile"      -> profileCommand.handle(event);
+                case "prestige"     -> prestigeCommand.handle(event);
+                case "legacy"       -> legacyCommand.handle(event);
+                case "achievements" -> achievementsCommand.handle(event);
+                case "invest"       -> investCommand.handle(event);
+                case "pr"           -> prCommand.handle(event);
+                case "admin"        -> adminCommand.handle(event);
+                default -> event.reply("⚙️ **/" + cmd + "** kommt bald.")
                         .setEphemeral(true).queue();
             }
         } catch (Exception e) {

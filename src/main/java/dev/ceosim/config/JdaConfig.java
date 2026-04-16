@@ -18,13 +18,14 @@ public class JdaConfig {
 
     @Bean
     public JDA jda(SlashCommandListener slashCommandListener,
-                   StartCommand startCommand) throws InterruptedException {
+                   StartCommand startCommand,
+                   PrestigeCommand prestigeCommand) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.MESSAGE_CONTENT
                 )
-                .addEventListeners(slashCommandListener, startCommand)
+                .addEventListeners(slashCommandListener, startCommand, prestigeCommand)
                 .build()
                 .awaitReady();
 
