@@ -35,6 +35,7 @@ public class TickService {
     private final CompanyRepository  companyRepo;
     private final EmployeeRepository employeeRepo;
     private final EventService       eventService;
+    private final NpcService         npcService;
 
     private static final Random RANDOM = new Random();
 
@@ -47,6 +48,9 @@ public class TickService {
     public void runTick() {
         List<Company> companies = companyRepo.findAllActiveAndNotPaused();
         log.info("Tick gestartet — {} aktive Firmen", companies.size());
+
+        // NPCs wachsen lassen
+        npcService.tickAllNpcs();
 
         for (Company company : companies) {
             try {

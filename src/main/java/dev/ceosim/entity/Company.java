@@ -157,6 +157,10 @@ public class Company {
     @Builder.Default
     private List<CompanyProject> projects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<CompanyTechNode> techNodes = new ArrayList<>();
+
     // ---- Hilfsmethoden ----
 
     public boolean isActive() {

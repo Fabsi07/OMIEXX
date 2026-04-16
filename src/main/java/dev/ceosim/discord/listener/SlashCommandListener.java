@@ -21,6 +21,10 @@ public class SlashCommandListener extends ListenerAdapter {
     private final FireCommand     fireCommand;
     private final ProjectCommand  projectCommand;
     private final LogCommand      logCommand;
+    private final AcquireCommand  acquireCommand;
+    private final FundraiseCommand fundraiseCommand;
+    private final ExpandCommand   expandCommand;
+    private final ResearchCommand researchCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -29,15 +33,26 @@ public class SlashCommandListener extends ListenerAdapter {
 
         try {
             switch (cmd) {
-                case "start"    -> startCommand.handle(event);
-                case "report"   -> reportCommand.handle(event);
-                case "help"     -> helpCommand.handle(event);
-                case "log"      -> logCommand.handle(event);
-                case "market"   -> marketCommand.handle(event);
-                case "team"     -> teamCommand.handle(event);
-                case "hire"     -> hireCommand.handle(event);
-                case "fire"     -> fireCommand.handle(event);
-                case "project"  -> projectCommand.handle(event);
+                // Phase 1
+                case "start"     -> startCommand.handle(event);
+                case "report"    -> reportCommand.handle(event);
+                case "help"      -> helpCommand.handle(event);
+                // Phase 2
+                case "log"       -> logCommand.handle(event);
+                case "market"    -> marketCommand.handle(event);
+                // Phase 3
+                case "team"      -> teamCommand.handle(event);
+                case "hire"      -> hireCommand.handle(event);
+                case "fire"      -> fireCommand.handle(event);
+                // Phase 4
+                case "project"   -> projectCommand.handle(event);
+                // Phase 5
+                case "acquire"   -> acquireCommand.handle(event);
+                case "fundraise" -> fundraiseCommand.handle(event);
+                case "expand"    -> expandCommand.handle(event);
+                // Phase 6
+                case "research"  -> researchCommand.handle(event);
+
                 default -> event.reply("⚙️ **/" + cmd + "** kommt in einer der nächsten Phasen.")
                         .setEphemeral(true).queue();
             }
