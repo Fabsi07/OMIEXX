@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏢 OMIEXX
+# 🏢 OMNIEXX
 
 **Ein Discord Bot Wirtschaftssimulationsspiel**
 
@@ -15,9 +15,9 @@ Gründe eine Firma. Triff Entscheidungen. Sabotiere Konkurrenten. Dominiere den 
 
 ---
 
-## Was ist CEO Sim?
+## Was ist OMNIEXX?
 
-CEO Sim ist ein Discord-Bot-Spiel in dem Spieler Technologie-Startups gründen und gegeneinander antreten. Das Spiel läuft tickbasiert — alle 6 Stunden passiert etwas. Zwischen den Ticks trifft man Entscheidungen, stellt Mitarbeiter ein, startet Projekte und sabotiert die Konkurrenz.
+OMNIEXX ist ein Discord-Bot-Spiel in dem Spieler Technologie-Startups gründen und gegeneinander antreten. Das Spiel läuft tickbasiert — alle 6 Stunden passiert etwas. Zwischen den Ticks trifft man Entscheidungen, stellt Mitarbeiter ein, startet Projekte und sabotiert die Konkurrenz.
 
 Das Ziel: Als erstes $1M Valuation erreichen und prestige-resetten — immer stärker werden.
 
@@ -137,8 +137,8 @@ Flyway führt die Migrations automatisch durch. Nach wenigen Sekunden ist der Bo
 
 ```bash
 # PostgreSQL starten
-docker run --name ceosim-db \
-  -e POSTGRES_DB=ceosim -e POSTGRES_USER=ceosim -e POSTGRES_PASSWORD=secret \
+docker run --name omniexx-db \
+  -e POSTGRES_DB=omniexx -e POSTGRES_USER=omniexx -e POSTGRES_PASSWORD=secret \
   -p 5432:5432 -d postgres:16
 
 # Bot starten — Tick für Dev auf 1 Minute
@@ -163,7 +163,7 @@ export TICK_INTERVAL_MS=60000
 ## Projektstruktur
 
 ```
-src/main/java/dev/ceosim/
+src/main/java/dev/omniexx/
 ├── config/
 │   └── JdaConfig.java              JDA Bean + alle Slash Commands registriert
 ├── discord/
@@ -208,8 +208,8 @@ src/main/resources/db/migration/
 | Variable | Beschreibung | Default |
 |---|---|---|
 | `DISCORD_TOKEN` | Bot Token aus dem Developer Portal | — |
-| `DB_URL` | JDBC Connection String | `jdbc:postgresql://localhost:5432/ceosim` |
-| `DB_USER` | Datenbank-User | `ceosim` |
+| `DB_URL` | JDBC Connection String | `jdbc:postgresql://localhost:5432/omniexx` |
+| `DB_USER` | Datenbank-User | `omniexx` |
 | `DB_PASSWORD` | Datenbank-Passwort | `secret` |
 | `ADMIN_DISCORD_IDS` | Komma-getrennte Discord-IDs | — |
 | `TICK_INTERVAL_MS` | Tick-Intervall (6h = `21600000`) | `21600000` |

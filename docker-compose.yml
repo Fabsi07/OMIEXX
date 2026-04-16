@@ -3,31 +3,31 @@ version: '3.9'
 services:
   db:
     image: postgres:16-alpine
-    container_name: ceosim-db
+    container_name: omniexx-db
     environment:
-      POSTGRES_DB:       ceosim
-      POSTGRES_USER:     ceosim
+      POSTGRES_DB:       omniexx
+      POSTGRES_USER:     omniexx
       POSTGRES_PASSWORD: secret
     ports:
       - "5432:5432"
     volumes:
-      - ceosim-data:/var/lib/postgresql/data
+      - omniexx-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ceosim"]
+      test: ["CMD-SHELL", "pg_isready -U omniexx"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   bot:
     build: .
-    container_name: ceosim-bot
+    container_name: omniexx-bot
     depends_on:
       db:
         condition: service_healthy
     environment:
       DISCORD_TOKEN:        ${DISCORD_TOKEN}
-      DB_URL:               jdbc:postgresql://db:5432/ceosim
-      DB_USER:              ceosim
+      DB_URL:               jdbc:postgresql://db:5432/omniexx
+      DB_USER:              omniexx
       DB_PASSWORD:          secret
       TICK_INTERVAL_MS:     ${TICK_INTERVAL_MS:-21600000}
       ADMIN_DISCORD_IDS:    ${ADMIN_DISCORD_IDS:-}
@@ -36,4 +36,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  ceosim-data:
+  omniexx-data:

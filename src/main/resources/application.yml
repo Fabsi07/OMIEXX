@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ceosim
-    username: ceosim
+    url: jdbc:postgresql://localhost:5432/omniexx
+    username: omniexx
     password: secret
     driver-class-name: org.postgresql.Driver
 
@@ -19,7 +19,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-ceosim:
+omniexx:
   discord:
     token: ${DISCORD_TOKEN}
   tick:

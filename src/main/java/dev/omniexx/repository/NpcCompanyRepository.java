@@ -1,0 +1,18 @@
+package dev.omniexx.repository;
+
+import dev.omniexx.entity.Market;
+import dev.omniexx.entity.NpcCompany;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface NpcCompanyRepository extends JpaRepository<NpcCompany, Long> {
+    List<NpcCompany> findByMarketAndAcquiredFalse(Market market);
+    List<NpcCompany> findByAcquiredFalse();
+    Optional<NpcCompany> findByNameIgnoreCaseAndAcquiredFalse(String name);
+    long countByMarketAndAcquiredFalse(Market market);
+    boolean existsByName(String name);
+}
