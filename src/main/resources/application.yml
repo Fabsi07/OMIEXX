@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ceosim
+    username: ceosim
+    password: secret
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate        # Flyway übernimmt das Schema, Hibernate nur validieren
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+ceosim:
+  discord:
+    token: ${DISCORD_TOKEN}
+  tick:
+    # 6h = 21600000ms | Für Dev: TICK_INTERVAL_MS=60000
+    interval-ms: ${TICK_INTERVAL_MS:21600000}
