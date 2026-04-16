@@ -17,6 +17,10 @@ public class SlashCommandListener extends ListenerAdapter {
     private final HelpCommand     helpCommand;
     private final TeamCommand     teamCommand;
     private final MarketCommand   marketCommand;
+    private final HireCommand     hireCommand;
+    private final FireCommand     fireCommand;
+    private final ProjectCommand  projectCommand;
+    private final LogCommand      logCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -28,19 +32,19 @@ public class SlashCommandListener extends ListenerAdapter {
                 case "start"    -> startCommand.handle(event);
                 case "report"   -> reportCommand.handle(event);
                 case "help"     -> helpCommand.handle(event);
-                case "team"     -> teamCommand.handle(event);
+                case "log"      -> logCommand.handle(event);
                 case "market"   -> marketCommand.handle(event);
-
-                // Noch nicht implementiert — saubere Antwort statt Exception
-                default -> event.reply("⚙️ **/" + cmd + "** wird in einer der nächsten Phasen implementiert.")
-                        .setEphemeral(true)
-                        .queue();
+                case "team"     -> teamCommand.handle(event);
+                case "hire"     -> hireCommand.handle(event);
+                case "fire"     -> fireCommand.handle(event);
+                case "project"  -> projectCommand.handle(event);
+                default -> event.reply("⚙️ **/" + cmd + "** kommt in einer der nächsten Phasen.")
+                        .setEphemeral(true).queue();
             }
         } catch (Exception e) {
             log.error("Fehler bei /{} von {}: {}", cmd, event.getUser().getId(), e.getMessage(), e);
-            event.reply("❌ Ein interner Fehler ist aufgetreten. Bitte versuch es erneut.")
-                    .setEphemeral(true)
-                    .queue();
+            event.reply("❌ Interner Fehler. Bitte versuch es erneut.")
+                    .setEphemeral(true).queue();
         }
     }
 }
