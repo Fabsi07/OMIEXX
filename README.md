@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏢 CEO Sim
+# 🏢 OMIEXX
 
 **Ein Discord Bot Wirtschaftssimulationsspiel**
 
