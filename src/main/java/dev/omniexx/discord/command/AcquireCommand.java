@@ -107,7 +107,7 @@ public class AcquireCommand {
     }
 
     @Transactional
-    protected void doAcquire(Company company, NpcCompany npc, long price) {
+    public void doAcquire(Company company, NpcCompany npc, long price) {
         company.setCapital(company.getCapital() - price);
 
         // Marktanteil übertragen

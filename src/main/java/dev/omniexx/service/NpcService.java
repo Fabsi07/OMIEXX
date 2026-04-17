@@ -3,7 +3,8 @@ package dev.omniexx.service;
 import dev.omniexx.entity.Market;
 import dev.omniexx.entity.NpcCompany;
 import dev.omniexx.repository.NpcCompanyRepository;
-import jakarta.annotation.PostConstruct;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class NpcService {
     };
 
     // ── Server-Start: NPCs spawnen ────────────────────────────────────────
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void spawnInitialNpcs() {
         int spawned = 0;

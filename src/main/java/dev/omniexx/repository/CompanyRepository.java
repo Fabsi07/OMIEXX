@@ -1,6 +1,7 @@
 package dev.omniexx.repository;
 
 import dev.omniexx.entity.Company;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,10 +14,12 @@ import java.util.Optional;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     /** Aktive Company eines Spielers (nicht soft-deleted, nicht in Pause) */
+    @EntityGraph(attributePaths = {"markets", "employees", "projects", "techNodes", "player"})
     @Query("SELECT c FROM Company c WHERE c.player.discordId = :discordId AND c.deletedAt IS NULL")
     Optional<Company> findActiveByDiscordId(@Param("discordId") String discordId);
 
     /** Alle aktiven Companies für den Tick-Processor */
+    @EntityGraph(attributePaths = {"employees", "projects", "player"})
     @Query("SELECT c FROM Company c WHERE c.deletedAt IS NULL AND c.paused = false")
     List<Company> findAllActiveAndNotPaused();
 

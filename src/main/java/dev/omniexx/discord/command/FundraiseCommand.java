@@ -132,7 +132,7 @@ public class FundraiseCommand {
     }
 
     @Transactional
-    protected void applyResult(Company company, FundraiseResult result) {
+    public void applyResult(Company company, FundraiseResult result) {
         if (result.capitalGained > 0) {
             company.setCapital(company.getCapital() + result.capitalGained);
         }

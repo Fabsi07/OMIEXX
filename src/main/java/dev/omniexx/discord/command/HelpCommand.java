@@ -60,7 +60,7 @@ public class HelpCommand {
         eb.addField("─── 6–8h Cooldown ───",
                 "/pr [positiv|negativ] — PR-Kampagne\n"
                 + "/acquire [firma] — NPC akquirieren" + lock(!hasCompany || company.getActiveEmployees().size() < 3, "3 Mitarbeiter nötig") + "\n"
-                + "/sabotage @user [aktion] — Sabotage" + lock(!hasCompany || company.getValuation() < 5_000_000L, "$50k Valuation nötig") + "\n"
+                + "/sabotage @user [aktion] — Sabotage" + lock(!hasCompany || company.calculateValuation() < 5_000_000L, "$50k Valuation nötig") + "\n"
                 + "/project start [id] — Projekt starten\n",
                 false);
 
@@ -70,7 +70,7 @@ public class HelpCommand {
                 + "/expand [markt] — Markt betreten\n"
                 + "/fundraise — VC-Pitch" + lock(!hasCompany || company.getTickCount() < 5, "ab Tick 5") + "\n"
                 + "/alliance create [name] — Allianz gründen\n"
-                + "/prestige — Prestige-Flow" + lock(!hasCompany || company.getValuation() < 100_000_000L, "$1M Valuation nötig") + "\n"
+                + "/prestige — Prestige-Flow" + lock(!hasCompany || company.calculateValuation() < 100_000_000L, "$1M Valuation nötig") + "\n"
                 + "/pause — Firma pausieren (2×/Monat)\n",
                 false);
 

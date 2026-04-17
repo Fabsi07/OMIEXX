@@ -91,7 +91,7 @@ public class TickService {
             capital -= interest;
             eventService.log(company, "tick_processed",
                     "💳 Zinsen gezahlt",
-                    OmniexxEmbedBuilder_format(interest) + " Zinsen auf Kredit",
+                    fmtMoney(interest) + " Zinsen auf Kredit",
                     Map.of("capital", -interest));
         }
 
@@ -141,9 +141,9 @@ public class TickService {
         eventService.log(company, "tick_processed",
                 "⏱️ Tick #" + company.getTickCount() + " verarbeitet",
                 String.format("Revenue +%s | Salary -%s | Kapital: %s",
-                        OmniexxEmbedBuilder_format(revenue),
-                        OmniexxEmbedBuilder_format(totalSalary),
-                        OmniexxEmbedBuilder_format(capital)),
+                        fmtMoney(revenue),
+                        fmtMoney(totalSalary),
+                        fmtMoney(capital)),
                 Map.of("capital", revenue - totalSalary));
     }
 
@@ -233,7 +233,7 @@ public class TickService {
                 company.setCapital(company.getCapital() + bonus);
                 eventService.log(company, "random_event",
                         "💡 Marktchance genutzt",
-                        "Ein unerwarteter Deal spült " + OmniexxEmbedBuilder_format(bonus) + " in die Kasse.",
+                        "Ein unerwarteter Deal spült " + fmtMoney(bonus) + " in die Kasse.",
                         Map.of("capital", bonus));
             }
             case 3 -> {  // Kleiner Rückschlag
@@ -241,7 +241,7 @@ public class TickService {
                 company.setCapital(company.getCapital() - loss);
                 eventService.log(company, "random_event",
                         "⚡ Unerwartete Kosten",
-                        "Serverausfall, Bugfix-Sprint oder Lieferantenproblem — " + OmniexxEmbedBuilder_format(loss) + " weg.",
+                        "Serverausfall, Bugfix-Sprint oder Lieferantenproblem — " + fmtMoney(loss) + " weg.",
                         Map.of("capital", -loss));
             }
             case 4 -> {  // Morale-Boost (Pizza-Friday etc.)
@@ -277,7 +277,7 @@ public class TickService {
     }
 
     // Hilfsmethode: Cents → $-String (ohne Import von OmniexxEmbedBuilder)
-    private String OmniexxEmbedBuilder_format(long cents) {
+    private String fmtMoney(long cents) {
         long d = cents / 100;
         if (d >= 1_000_000) return String.format("$%.1fM", d / 1_000_000.0);
         if (d >= 1_000)     return String.format("$%,d", d);

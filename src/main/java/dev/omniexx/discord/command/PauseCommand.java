@@ -60,7 +60,7 @@ public class PauseCommand {
     }
 
     @Transactional
-    protected void doPause(Company company) {
+    public void doPause(Company company) {
         company.setPaused(true);
         company.setPauseUntil(OffsetDateTime.now().plusHours(PAUSE_HOURS));
         company.setPausesUsed((short) (company.getPausesUsed() + 1));

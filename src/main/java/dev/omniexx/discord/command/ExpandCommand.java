@@ -109,7 +109,7 @@ public class ExpandCommand {
     }
 
     @Transactional
-    protected void doExpand(Company company, Market target, long cost) {
+    public void doExpand(Company company, Market target, long cost) {
         company.setCapital(company.getCapital() - cost);
 
         CompanyMarket cm = CompanyMarket.builder()

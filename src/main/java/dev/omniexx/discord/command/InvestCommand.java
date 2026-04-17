@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Random;
 
-@Component("investCommand")
+@Component
 @RequiredArgsConstructor
 public class InvestCommand {
 

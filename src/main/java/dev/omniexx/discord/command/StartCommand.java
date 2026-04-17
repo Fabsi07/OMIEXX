@@ -98,7 +98,8 @@ public class StartCommand extends ListenerAdapter {
 
             StarterType type = StarterType.valueOf(id.replace("start:type:", ""));
             String discordName = event.getUser().getEffectiveName();
-            String companyName = discordName + " Corp";
+            // Name auf 60 Zeichen begrenzen (DB: VARCHAR(64))
+            String companyName = (discordName.length() > 56 ? discordName.substring(0, 56) : discordName) + " Corp";
 
             // Player anlegen oder laden
             Player player = playerRepo.findByDiscordId(userId).orElseGet(() ->

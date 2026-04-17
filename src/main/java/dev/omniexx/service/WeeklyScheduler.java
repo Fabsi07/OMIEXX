@@ -8,6 +8,7 @@ import dev.omniexx.util.OmniexxEmbedBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import org.springframework.context.annotation.Lazy;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,6 +27,7 @@ public class WeeklyScheduler {
 
     private final CompanyRepository       companyRepo;
     private final WeeklySnapshotRepository snapshotRepo;
+    @Lazy
     private final JDA                     jda;
 
     @Value("${omniexx.channels.leaderboard:}")
