@@ -35,6 +35,7 @@ public class SlashCommandListener extends ListenerAdapter {
     private final PauseCommand        pauseCommand;
     private final NotifyCommand       notifyCommand;
     private final AdminCommand        adminCommand;
+    private final LoanRepayCommand    loanRepayCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -75,6 +76,7 @@ public class SlashCommandListener extends ListenerAdapter {
                 // Phase 9 — Polish
                 case "achievements" -> achievementsCommand.handle(event);
                 case "admin"        -> adminCommand.handle(event);
+                case "loanrepay"    -> loanRepayCommand.handle(event);
 
                 default -> event.reply("⚙️ **/" + cmd + "** ist noch nicht implementiert.")
                         .setEphemeral(true).queue();
