@@ -34,3 +34,23 @@ omniexx:
   channels:
     leaderboard: ${LEADERBOARD_CHANNEL_ID:}
     event-log:   ${EVENT_LOG_CHANNEL_ID:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
