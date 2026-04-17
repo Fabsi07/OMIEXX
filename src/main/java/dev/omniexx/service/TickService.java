@@ -4,6 +4,7 @@ import dev.omniexx.entity.Company;
 import dev.omniexx.entity.Employee;
 import dev.omniexx.repository.CompanyRepository;
 import dev.omniexx.repository.EmployeeRepository;
+import dev.omniexx.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,6 +39,7 @@ public class TickService {
     private final NpcService         npcService;
     private final dev.omniexx.service.achievement.AchievementService achievementService;
     private final WeeklyScheduler    weeklyScheduler;
+    private final NotificationService notificationService;
 
     private static final Random RANDOM = new Random();
 
@@ -137,6 +139,9 @@ public class TickService {
         // Achievement-Check
         achievementService.checkAndUnlock(company);
 
+        // DM-Benachrichtigung senden
+        notificationService.tickReady(company);
+
         // Tick-Event loggen
         eventService.log(company, "tick_processed",
                 "⏱️ Tick #" + company.getTickCount() + " verarbeitet",
@@ -167,7 +172,8 @@ public class TickService {
 
             applyProjectOutcome(company, project.getProjectKey(), outcome);
 
-            eventService.log(company, "project_completed",
+            notificationService.projectDone(company, project.getProjectKey(), outcome);
+        eventService.log(company, "project_completed",
                     projectOutcomeTitle(outcome) + " — " + project.getProjectKey(),
                     null, null);
         }
