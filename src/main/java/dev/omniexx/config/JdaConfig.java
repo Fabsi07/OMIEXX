@@ -82,14 +82,8 @@ public class JdaConfig {
                         .addOption(OptionType.USER, "ziel", "Ziel-Spieler", true)
                         .addOption(OptionType.STRING, "aktion",
                                 "leak | hiring_war | fake_pr | infra", true),
-                Commands.slash("deal", "Handelsangebot an anderen Spieler")
-                        .addOption(OptionType.USER, "ziel", "Ziel-Spieler", true)
-                        .addOption(OptionType.STRING, "angebot", "Beschreibung des Angebots", true),
-                Commands.slash("alliance", "Allianzen verwalten")
-                        .addOption(OptionType.STRING, "aktion",
-                                "create | invite | leave", true)
-                        .addOption(OptionType.STRING, "name", "Allianz-Name (für create)", false)
-                        .addOption(OptionType.USER, "spieler", "Spieler (für invite)", false),
+                // TODO feat/deal-command: Commands.slash("deal", ...) — noch nicht implementiert
+                // TODO feat/alliances: Commands.slash("alliance", ...) — noch nicht implementiert
 
                 // Phase 8 — Prestige
                 Commands.slash("prestige", "Prestige-Flow starten (ab $1M Valuation)"),
