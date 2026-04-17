@@ -3,6 +3,7 @@ package dev.omniexx.service;
 import dev.omniexx.entity.*;
 import dev.omniexx.repository.*;
 import dev.omniexx.service.achievement.AchievementService;
+import dev.omniexx.service.EventLogService;
 import dev.omniexx.service.achievement.AchievementType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,7 @@ public class PrestigeService {
             achievementService.unlock(player, AchievementType.TRIPLE_PRESTIGE);
         }
 
+        eventLogService.postPrestige(company, "hard_reset");
         log.info("Hard Prestige: {} → Level {}", player.getDiscordName(), newCompany.getPrestigeLevel());
         return newCompany;
     }
@@ -136,6 +138,7 @@ public class PrestigeService {
 
         companyRepo.save(company);
         achievementService.unlock(company.getPlayer(), AchievementType.SOFT_PRESTIGE);
+        eventLogService.postPrestige(company, type);
         return resultMessage;
     }
 
