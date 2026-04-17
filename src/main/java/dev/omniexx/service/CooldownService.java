@@ -1,52 +1,68 @@
 package dev.omniexx.service;
 
+import dev.omniexx.entity.Cooldown;
+import dev.omniexx.repository.CooldownRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.Map;
-import java.time.Instant;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * In-Memory Cooldown-System.
- * Key: "discordUserId:commandName"
- * Value: Zeitpunkt wann der Cooldown abläuft.
- *
- * Reicht für den Start — bei Multi-Instance-Deployment
- * später durch Redis ersetzen.
+ * Persistente Cooldown-Verwaltung via PostgreSQL.
+ * Cooldowns überleben Bot-Neustarts.
+ * In-Memory Cache für schnelle Lookups.
  */
 @Service
+@RequiredArgsConstructor
 public class CooldownService {
 
-    private final ConcurrentHashMap<String, Instant> cooldowns = new ConcurrentHashMap<>();
+    private final CooldownRepository cooldownRepo;
 
-    /**
-     * Prüft ob ein Cooldown aktiv ist.
-     * @return verbleibende Zeit, oder null wenn kein Cooldown
-     */
+    // In-Memory Cache: verhindert DB-Hit bei jedem Command
+    private final Map<String, OffsetDateTime> cache = new ConcurrentHashMap<>();
+
     public Duration getRemaining(String discordId, String command) {
-        Instant expires = cooldowns.get(key(discordId, command));
-        if (expires == null) return null;
+        String key = key(discordId, command);
+        OffsetDateTime expires = cache.get(key);
 
-        Duration remaining = Duration.between(Instant.now(), expires);
+        if (expires == null) {
+            // Cache-Miss: aus DB laden
+            Optional<Cooldown> cd = cooldownRepo.findByDiscordIdAndCommand(discordId, command);
+            if (cd.isEmpty()) return null;
+            expires = cd.get().getExpiresAt();
+            cache.put(key, expires);
+        }
+
+        Duration remaining = Duration.between(OffsetDateTime.now(), expires);
         if (remaining.isNegative()) {
-            cooldowns.remove(key(discordId, command));
+            cache.remove(key);
             return null;
         }
         return remaining;
     }
 
-    /**
-     * Setzt einen Cooldown.
-     */
+    @Transactional
     public void set(String discordId, String command, Duration duration) {
-        cooldowns.put(key(discordId, command), Instant.now().plus(duration));
+        OffsetDateTime expires = OffsetDateTime.now().plus(duration);
+        cache.put(key(discordId, command), expires);
+
+        // Upsert in DB
+        cooldownRepo.findByDiscordIdAndCommand(discordId, command).ifPresentOrElse(
+            cd -> { cd.setExpiresAt(expires); cooldownRepo.save(cd); },
+            ()  -> cooldownRepo.save(Cooldown.builder()
+                        .discordId(discordId)
+                        .command(command)
+                        .expiresAt(expires)
+                        .build())
+        );
     }
 
-    /**
-     * Prüft und setzt in einem Schritt.
-     * @return null wenn OK, sonst verbleibende Duration
-     */
     public Duration checkAndSet(String discordId, String command, Duration duration) {
         Duration remaining = getRemaining(discordId, command);
         if (remaining != null) return remaining;
@@ -54,12 +70,18 @@ public class CooldownService {
         return null;
     }
 
-    /** Formatiert eine Duration lesbar: "2h 15m" oder "45m 30s" */
+    /** Abgelaufene Cooldowns täglich aufräumen */
+    @Scheduled(cron = "0 0 3 * * *")
+    @Transactional
+    public void cleanup() {
+        int deleted = cooldownRepo.deleteExpired(OffsetDateTime.now());
+        if (deleted > 0) cache.clear(); // Cache nach Cleanup leeren
+    }
+
     public static String format(Duration d) {
-        long hours   = d.toHours();
+        long hours = d.toHours();
         long minutes = d.toMinutesPart();
         long seconds = d.toSecondsPart();
-
         if (hours > 0)   return hours + "h " + minutes + "m";
         if (minutes > 0) return minutes + "m " + seconds + "s";
         return seconds + "s";
