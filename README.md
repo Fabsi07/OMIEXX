@@ -2,14 +2,18 @@
 
 # 🏢 OMNIEXX
 
-**Ein Discord Bot Wirtschaftssimulationsspiel**
+**Discord Wirtschaftssimulation**
 
-Gründe eine Firma. Triff Entscheidungen. Sabotiere Konkurrenten. Dominiere den Markt.
+Gründe ein Startup. Triff Entscheidungen. Sabotiere Konkurrenten. Dominiere den Markt.
+
+[![Discord](https://img.shields.io/badge/Discord-Add_to_Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/api/oauth2/authorize?client_id=DEINE_CLIENT_ID&permissions=277025392640&scope=bot%20applications.commands)
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3-brightgreen?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
 [![JDA](https://img.shields.io/badge/JDA-5.0-7289DA?style=flat-square&logo=discord)](https://github.com/discord-jda/JDA)
+
+[**→ Bot zum Server hinzufügen**](https://discord.com/api/oauth2/authorize?client_id=DEINE_CLIENT_ID&permissions=277025392640&scope=bot%20applications.commands) · [Website](https://fabsi07.github.io/OMIEXX/) · [Support Server](#)
 
 </div>
 
@@ -17,298 +21,126 @@ Gründe eine Firma. Triff Entscheidungen. Sabotiere Konkurrenten. Dominiere den 
 
 ## Was ist OMNIEXX?
 
-OMNIEXX ist ein Discord-Bot-Spiel in dem Spieler Technologie-Startups gründen und gegeneinander antreten. Das Spiel läuft tickbasiert — alle 6 Stunden passiert etwas. Zwischen den Ticks trifft man Entscheidungen, stellt Mitarbeiter ein, startet Projekte und sabotiert die Konkurrenz.
+OMNIEXX ist ein tickbasiertes Wirtschaftssimulationsspiel direkt in Discord. Alle 6 Stunden läuft ein Tick — Events passieren, Entscheidungen müssen getroffen werden, Konkurrenten sabotieren sich gegenseitig.
 
-Das Ziel: Als erstes $1M Valuation erreichen und prestige-resetten — immer stärker werden.
+Baue ein Startup auf, stelle ein Team ein, forsche im Tech-Tree, akquiriere NPC-Firmen und prestige-resette für immer stärkere Runs. Alles per Slash Commands direkt im Server.
 
 ---
 
 ## Features
 
-**Core Loop**
-- Tick-System alle 6h mit zufälligen Events und Multiple-Choice-Entscheidungen
-- 6 KPIs: Kapital, Umsatz/Tick, Burn Rate, Morale, Marktanteil, Reputation
-- Insolvenz-Mechanik mit 2 Notbetriebs-Ticks bevor ein Reset folgt
+**Startup-Simulation**
+Gründe eine Firma in einem von 5 Märkten, wähle deinen Startertyp und manage 6 KPIs: Kapital, Umsatz/Tick, Burn Rate, Morale, Marktanteil und Reputation.
 
-**Märkte & NPCs**
-- 5 Startmärkte: Consumer Tech, Enterprise SaaS, Fintech, E-Commerce, Cybersecurity
-- 4 freischaltbare Märkte: AI/Deep Tech, Healthcare, Media & Gaming, Government
-- NPC-Firmen mit Persönlichkeiten (aggressiv / konservativ / innovativ) die auto-wachsen
+**Echte Entscheidungen**
+Alle 6 Stunden passiert ein Tick mit zufälligen Events. Investiere, starte PR-Kampagnen, reagiere auf Krisen. Jede Entscheidung hat messbare Konsequenzen.
 
-**Mitarbeiter**
-- Hardcoded Name-Pools — keine API-Kosten
-- 11 Rollen, einige markt- oder tech-tree-exklusiv
-- Generationen-Mechanik: 1 Mitarbeiter überlebt einen Hard-Prestige-Reset
+**Team aufbauen**
+11 Rollen mit einzigartigen Namen, gewürfelten Stats und festem Gehalt pro Tick. Mitarbeiter können kündigen wenn die Morale zu niedrig ist.
 
-**Projekte**
-- 30 hardcoded Projekte (6 pro Startmarkt)
-- Risiko-Roll: Vollerfolg / Teilerfolg / Scheitern / Kritischer Fehler
-- Projekte schalten Märkte, Rollen und Tech-Nodes frei
+**30 Projekte**
+6 pro Markt, hardcoded mit echten Kosten, Dauer und Risiko-Roll. Projekte schalten Märkte, Rollen und Tech-Nodes frei.
 
 **Tech-Tree**
-- 3 Säulen: Operations, R&D, People — je 5 Tiers
-- Research Points passiv pro Tick, 1 Node pro 24h freischaltbar
+3 Säulen (Operations, R&D, People) mit je 5 Tiers. Research Points passiv generiert, 1 Node pro 24h freischaltbar.
 
-**PvP**
-- 4 Sabotage-Aktionen mit Backfire-Mechanik
-- Deals und Lieferverträge zwischen Spielern
-- Akquirierung von NPC-Firmen
+**NPC-Welt**
+Firmen mit 3 Persönlichkeiten wachsen automatisch, reagieren auf den Markt und können akquiriert werden.
 
-**Prestige & Endgame**
-- Hard Reset: +10% Legacy-Multiplikator dauerhaft, 1 Mitarbeiter kommt mit
-- Soft Prestige: IPO oder Markt-Dominanz ohne Reset (einmalig pro Run)
-- 35 permanente Achievements
+**PvP & Sabotage**
+4 Sabotage-Aktionen (Leak, Hiring War, Fake PR, Infra-Angriff) mit Backfire-Mechanik.
+
+**Prestige-System**
+Hard Reset mit dauerhaftem Legacy-Multiplikator (+10% pro Run) oder Soft Prestige für eine einmalige Mega-Aktion wie einen IPO.
 
 ---
 
 ## Commands
 
-| Command | Beschreibung | Cooldown |
-|---|---|---|
-| `/start` | Firma gründen — Markt + Startertyp per Button wählen | Einmalig |
-| `/report` | Company Dashboard mit allen KPIs | — |
-| `/team` | Mitarbeiter-Übersicht mit Stats | — |
-| `/market` | Valuation-Leaderboard (Spieler + NPCs) | — |
-| `/log` | Letzte 10 Events mit KPI-Deltas | — |
-| `/hire [rolle]` | Mitarbeiter einstellen | 3h |
-| `/fire [name]` | Mitarbeiter feuern | 3h |
-| `/invest [betrag]` | Kapital direkt in KPI pumpen | 4h |
-| `/pr [positiv\|negativ]` | PR-Kampagne starten | 6h |
-| `/project list` | Verfügbare Projekte des eigenen Markts | — |
-| `/project start [id]` | Projekt starten | 24h |
-| `/project status` | Aktives Projekt mit Fortschrittsbalken | — |
-| `/project boost` | Projekt um 1 Tick beschleunigen (Morale -2) | 4h |
-| `/project cancel` | Aktives Projekt abbrechen (50% Kosten verloren) | — |
-| `/acquire [firma]` | NPC-Firma übernehmen | 8h |
-| `/fundraise` | VC-Pitch (Outcome gewichtet nach KPIs) | 24h |
-| `/expand [markt]` | Neuen Marktbereich betreten | 24h |
-| `/research tree` | Tech-Tree anzeigen | — |
-| `/research pick [node]` | Node freischalten | 24h |
-| `/research status` | Research Points + nächste Nodes | — |
-| `/sabotage @user [aktion]` | leak / hiring_war / fake_pr / infra | 6h |
-| `/profile [firma]` | Öffentliches Firmenprofil | — |
-| `/prestige` | Hard Reset oder Soft Prestige wählen | — |
-| `/legacy` | Prestige-History und Achievements | — |
-| `/achievements` | Alle Abzeichen anzeigen | — |
-| `/pause` | Firma 48h einfrieren (kein Salary, keine Events) | 2× / Monat |
-| `/notify [event]` | Bot-Pings an-/ausschalten | — |
-| `/help` | Alle Commands mit Lock-Status | — |
-| `/admin [aktion]` | tick_skip / reset / spawn / event | Admin only |
-
----
-
-## Quickstart
-
-### Voraussetzungen
-
-- Java 21+
-- Docker & Docker Compose
-- Discord Bot Token
-
-### 1. Repository klonen
-
-```bash
-git clone https://github.com/Fabsi07/OMIEXX.git
-cd OMIEXX
-```
-
-### 2. Bot konfigurieren
-
-```bash
-cp .env.example .env
-```
-
-`.env` öffnen und mindestens diese Werte setzen:
-
-```env
-DISCORD_TOKEN=dein_bot_token
-ADMIN_DISCORD_IDS=deine_discord_id
-```
-
-### 3. Starten
-
-```bash
-docker compose up -d
-```
-
-Flyway führt die Migrations automatisch durch. Nach wenigen Sekunden ist der Bot online und `/start` funktioniert.
-
-### Lokal ohne Docker
-
-```bash
-# PostgreSQL starten
-docker run --name omniexx-db \
-  -e POSTGRES_DB=omniexx -e POSTGRES_USER=omniexx -e POSTGRES_PASSWORD=secret \
-  -p 5432:5432 -d postgres:16
-
-# Bot starten — Tick für Dev auf 1 Minute
-export DISCORD_TOKEN=dein_token
-export TICK_INTERVAL_MS=60000
-./mvnw spring-boot:run
-```
-
----
-
-## Discord Bot erstellen
-
-1. [Discord Developer Portal](https://discord.com/developers/applications) öffnen
-2. **New Application** → Name vergeben → **Bot** → **Add Bot**
-3. Token kopieren → in `.env` als `DISCORD_TOKEN` eintragen
-4. **OAuth2 → URL Generator** → Scopes: `bot`, `applications.commands`
-5. Bot Permissions: `Send Messages`, `Embed Links`, `Read Message History`
-6. Generierten Link öffnen → Bot zum Server hinzufügen
-
----
-
-## Projektstruktur
-
-```
-src/main/java/dev/omniexx/
-├── config/
-│   └── JdaConfig.java              JDA Bean + alle Slash Commands registriert
-├── discord/
-│   ├── command/                    23 Commands (einer pro Datei)
-│   └── listener/
-│       └── SlashCommandListener    Router für alle Commands
-├── entity/                         12 JPA Entities
-├── repository/                     Spring Data Repositories
-├── service/
-│   ├── TickService.java            @Scheduled Kern-Loop alle 6h
-│   ├── CompanyService.java         Hire/Fire/Create Businesslogik
-│   ├── NpcService.java             @PostConstruct Spawn + Tick-Wachstum
-│   ├── PrestigeService.java        Hard Reset + Soft Prestige
-│   ├── WeeklyScheduler.java        Sonntags Snapshots + Rangliste
-│   ├── CooldownService.java        In-Memory Cooldowns
-│   ├── EventService.java           Event-Log
-│   ├── achievement/
-│   │   ├── AchievementType.java    35 Achievements
-│   │   └── AchievementService.java
-│   ├── project/
-│   │   ├── ProjectDefinition.java  30 Projekte hardcoded
-│   │   └── ProjectService.java
-│   └── techtree/
-│       ├── TechNode.java           15 Nodes in 3 Säulen
-│       └── TechTreeService.java
-└── util/
-    └── CeoEmbedBuilder.java        Embed-Factory, formatMoney(), progressBar()
-
-src/main/resources/db/migration/
-├── V1__init_core.sql               Players, Companies, KPIs, Ticks
-├── V2__employees.sql               Employees, Generationen-Mechanik
-├── V3__projects_techtree.sql       Projects, Tech Tree Nodes
-├── V4__events_decisions.sql        Event Log, Tick Decisions
-├── V5__pvp_alliances_market.sql    NPCs, Sabotage, Alliances, Loans
-└── V6__achievements_prestige.sql   Achievements, Prestige, Notifications
-```
-
----
-
-## Umgebungsvariablen
-
-| Variable | Beschreibung | Default |
-|---|---|---|
-| `DISCORD_TOKEN` | Bot Token aus dem Developer Portal | — |
-| `DB_URL` | JDBC Connection String | `jdbc:postgresql://localhost:5432/omniexx` |
-| `DB_USER` | Datenbank-User | `omniexx` |
-| `DB_PASSWORD` | Datenbank-Passwort | `secret` |
-| `ADMIN_DISCORD_IDS` | Komma-getrennte Discord-IDs | — |
-| `TICK_INTERVAL_MS` | Tick-Intervall (6h = `21600000`) | `21600000` |
-| `LEADERBOARD_CHANNEL_ID` | Channel für wöchentliche Rangliste | — |
-| `EVENT_LOG_CHANNEL_ID` | Channel für server-weite Events | — |
-
----
-
-## Architektur-Entscheidungen
-
-**Hardcoded Spielinhalte**
-Projektdefinitionen, Tech-Tree-Nodes, Event-Templates und Mitarbeiter-Namen sind Java-Enums — keine DB-Queries, keine API-Kosten, kein Admin-Interface nötig. Die DB speichert nur States und History.
-
-**Geld in Cents**
-Alle Geldwerte als `BIGINT` in Cents. Kein Floating-Point-Fehler, saubere Darstellung via `CeoEmbedBuilder.formatMoney()`.
-
-**Soft-Delete für Companies**
-Hard-Prestige-Resets setzen `deleted_at` statt Daten zu löschen. Alle historischen Daten bleiben für `/legacy` erhalten.
-
-**In-Memory Cooldowns**
-`CooldownService` nutzt eine `ConcurrentHashMap`. Reicht für Single-Instance. Bei Multi-Instance durch Redis ersetzen.
-
----
-
-## Tech Stack
-
-| | |
+| Command | Was es macht |
 |---|---|
-| Sprache | Java 21 |
-| Framework | Spring Boot 3.3 |
-| Discord | JDA 5 |
-| Datenbank | PostgreSQL 16 |
-| Migrations | Flyway |
-| ORM | Spring Data JPA / Hibernate |
-| Build | Maven |
-| Container | Docker / Docker Compose |
+| `/start` | Firma gründen — Markt und Startertyp per Button wählen |
+| `/report` | Company Dashboard mit allen KPIs und Trends |
+| `/team` | Mitarbeiter-Übersicht mit Stats und Gehalt |
+| `/hire [rolle]` | Mitarbeiter einstellen |
+| `/fire [name]` | Mitarbeiter feuern |
+| `/project list` | Verfügbare Projekte für deinen Markt |
+| `/project start [id]` | Projekt starten |
+| `/project status` | Aktives Projekt mit Fortschrittsbalken |
+| `/project boost` | Projekt beschleunigen (Morale −2) |
+| `/research tree` | Tech-Tree anzeigen |
+| `/research pick [node]` | Node freischalten |
+| `/acquire [firma]` | NPC-Firma übernehmen |
+| `/fundraise` | VC-Pitch starten |
+| `/expand [markt]` | Neuen Markt betreten |
+| `/sabotage @user [aktion]` | Konkurrenten sabotieren |
+| `/pr [positiv\|negativ]` | PR-Kampagne starten |
+| `/invest [betrag]` | Kapital in KPI pumpen |
+| `/prestige` | Prestige-Flow starten (ab $1M Valuation) |
+| `/legacy` | Prestige-History und Achievements |
+| `/achievements` | Alle Abzeichen anzeigen |
+| `/market` | Server-Leaderboard nach Valuation |
+| `/profile [firma]` | Öffentliches Firmenprofil |
+| `/log` | Letzte Events deiner Firma |
+| `/pause` | Firma 48h einfrieren (2× / Monat) |
+| `/help` | Alle Commands mit Status |
 
 ---
 
-## Roadmap
+## Bot zum Server hinzufügen
 
-### ✅ Implementiert (Phase 1–10)
+**[→ Hier klicken um OMNIEXX einzuladen](https://discord.com/api/oauth2/authorize?client_id=DEINE_CLIENT_ID&permissions=277025392640&scope=bot%20applications.commands)**
 
-- [x] Core Tick-System (alle 6h, `@Scheduled`)
-- [x] Onboarding-Flow via Discord Buttons (`/start`)
-- [x] Alle KPIs: Kapital, Umsatz, Burn Rate, Morale, Marktanteil, Reputation
-- [x] Mitarbeiter-System mit Name-Pools, Stats, Salary (`/hire`, `/fire`, `/team`)
-- [x] 30 hardcoded Projekte (6 pro Markt) mit Risiko-Roll (`/project`)
-- [x] NPC-Firmen (auto-Spawn, 3 Persönlichkeiten, Tick-Wachstum)
-- [x] 9 Märkte — 5 Start, 4 freischaltbar via `/expand`
-- [x] Tech-Tree mit 15 Nodes in 3 Säulen (`/research`)
-- [x] VC-Fundraising mit gewichtetem Score-System (`/fundraise`)
-- [x] NPC-Akquisitionen (`/acquire`)
-- [x] Sabotage-System mit 4 Aktionen + Backfire (`/sabotage`)
-- [x] Prestige-System: Hard Reset + Soft Prestige (IPO / Markt-Dominanz) (`/prestige`)
-- [x] Generationen-Mechanik (1 Mitarbeiter überlebt Prestige)
-- [x] 35 Achievements, persistent über Prestige-Resets
-- [x] Wöchentlicher Leaderboard nach Wachstum (%) + Top-3 Buff
-- [x] Wöchentliche Snapshots pro Firma
-- [x] Pause-Modus (max. 2× / Monat, 48h)
-- [x] `/notify` Opt-in-Präferenzen speichern (DB-Tabelle)
-- [x] Kredit-System mit Zinsen pro Tick (`/loan`)
-- [x] PR-Kampagnen (`/pr`)
-- [x] Admin-Commands (`/admin tick_skip`, `reset`, `spawn`, `event`)
-- [x] GitHub Pages Landing Page
-- [x] Docker / Docker Compose Setup
+Der Bot benötigt folgende Berechtigungen:
+- `Send Messages` — Antworten in Channels
+- `Embed Links` — Discord Embeds für Dashboards
+- `Read Message History` — Slash Command Context
+- `Use Application Commands` — Slash Commands
+
+Nach dem Hinzufügen einfach `/start` in einem Channel eingeben — der Bot führt durch den Onboarding-Flow.
 
 ---
 
-### 🚧 Teilweise implementiert
+## Benötigte Channel-Konfiguration (optional)
 
-| Feature | Status | Was fehlt |
+Für den vollen Funktionsumfang können zwei dedizierte Channels eingerichtet werden:
+
+| Channel | Zweck | Einrichten |
 |---|---|---|
-| **`/notify` DM-Pings** | Präferenzen werden gespeichert | Bot sendet noch keine echten DM-Nachrichten |
-| **`/alliance`** | Slash Command registriert | Command-Handler, Entity, Service fehlen komplett |
-| **Event-Log Channel** | Config in `application.yml` | Bot postet noch nicht automatisch in den Channel |
+| `#omniexx-events` | Automatischer Event-Log (Insolvenzen, Prestige, Sabotage) | Channel-ID per `/admin eventlog [channel]` setzen |
+| `#omniexx-ranking` | Wöchentliches Leaderboard (automatisch jeden Sonntag) | Channel-ID per `/admin leaderboard [channel]` setzen |
+
+Beide sind optional — der Bot funktioniert auch ohne sie.
 
 ---
 
-### ⏳ Noch nicht implementiert
+## Märkte
 
-- [ ] **Allianzen vollständig** — `/alliance war`, Alliance Chest, Mega-Projekte
-- [ ] **Aktienmarkt** — Anteile an Spieler-Firmen kaufen, Dividenden, Hostile Takeover
-- [ ] **Lieferverträge** — `/contract` zwischen Spielern
-- [ ] **Schwarzmarkt** — `/blackmarket` illegale Shortcuts mit Erwischt-Risiko
-- [ ] **Daily System** — `/daily` Streak, `/objectives` Tagesziele, `/briefing`
-- [ ] **Season-System** — monatliche Seasons mit Pass, XP und exklusiven Rewards
-- [ ] **Karten-System** — Rare/Legendary Mitarbeiter, `/cards`, `/pack`, `/trade`
-- [ ] **Kosmetik** — `/brand` (Firmen-Emoji, Farbe), `/title`, `/chronicle`
-- [ ] **Heist** — ko-operativer Angriff auf NPC-Mega-Corp
-- [ ] **Event-Log Channel** — automatische Posts (Insolvenz, Prestige, Sabotage)
-- [ ] **DM-Benachrichtigungen** — echte Discord DMs für `/notify`
-- [ ] **Persistente Cooldowns via Redis** — aktuell In-Memory (verloren bei Neustart)
-- [ ] **Balance-Tuning** — nach erstem Playtest
+| Startmarkt | Beschreibung |
+|---|---|
+| 📱 Consumer Tech | Mobile Apps, Subscription-Produkte, B2C |
+| 💼 Enterprise SaaS | B2B Software, SOC 2, Enterprise Sales |
+| 💳 Fintech | Banking, Payments, Crypto, Compliance |
+| 🛒 E-Commerce | Fulfillment, Marketplace, Logistik |
+| 🔐 Cybersecurity | Pen Testing, SOC, Zero Trust, Gov-Zertifizierung |
+
+Freischaltbar durch Projekte und `/expand`:
+`🤖 AI/Deep Tech` · `🏥 Healthcare` · `🎮 Media & Gaming` · `🏛️ Government`
+
+---
+
+## Startertypen
+
+| Typ | Startkapital | Besonderheit |
+|---|---|---|
+| 💰 Bootstrapper | $20.000 | Solides Startkapital, stabiles Wachstum |
+| 🔬 Visionär | $5.000 | Mehr Research Points/Tick von Anfang an |
+| 🤝 Networker | $10.000 | Direkt 2 kostenlose Mitarbeiter beim Start |
 
 ---
 
 <div align="center">
 
-Made with ☕ — Contributions welcome
+Made with ☕ · [Website](https://fabsi07.github.io/OMIEXX/) · [Issues melden](https://github.com/Fabsi07/OMIEXX/issues)
 
 </div>
