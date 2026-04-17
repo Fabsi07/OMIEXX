@@ -251,14 +251,59 @@ Hard-Prestige-Resets setzen `deleted_at` statt Daten zu löschen. Alle historisc
 
 ## Roadmap
 
-- [ ] Allianzen zwischen Spielern (`/alliance`)
-- [ ] Aktienmarkt — Anteile an Spieler-Firmen kaufen
-- [ ] Lieferverträge (`/contract`)
-- [ ] Schwarzmarkt-Commands
-- [ ] Persistente Cooldowns via Redis
-- [ ] Event-Log Channel — automatische Posts bei Insolvenz, Prestige etc.
-- [ ] Notification-System — DM-Pings für wichtige Events
-- [ ] Balance-Tuning nach erstem Playtest
+### ✅ Implementiert (Phase 1–10)
+
+- [x] Core Tick-System (alle 6h, `@Scheduled`)
+- [x] Onboarding-Flow via Discord Buttons (`/start`)
+- [x] Alle KPIs: Kapital, Umsatz, Burn Rate, Morale, Marktanteil, Reputation
+- [x] Mitarbeiter-System mit Name-Pools, Stats, Salary (`/hire`, `/fire`, `/team`)
+- [x] 30 hardcoded Projekte (6 pro Markt) mit Risiko-Roll (`/project`)
+- [x] NPC-Firmen (auto-Spawn, 3 Persönlichkeiten, Tick-Wachstum)
+- [x] 9 Märkte — 5 Start, 4 freischaltbar via `/expand`
+- [x] Tech-Tree mit 15 Nodes in 3 Säulen (`/research`)
+- [x] VC-Fundraising mit gewichtetem Score-System (`/fundraise`)
+- [x] NPC-Akquisitionen (`/acquire`)
+- [x] Sabotage-System mit 4 Aktionen + Backfire (`/sabotage`)
+- [x] Prestige-System: Hard Reset + Soft Prestige (IPO / Markt-Dominanz) (`/prestige`)
+- [x] Generationen-Mechanik (1 Mitarbeiter überlebt Prestige)
+- [x] 35 Achievements, persistent über Prestige-Resets
+- [x] Wöchentlicher Leaderboard nach Wachstum (%) + Top-3 Buff
+- [x] Wöchentliche Snapshots pro Firma
+- [x] Pause-Modus (max. 2× / Monat, 48h)
+- [x] `/notify` Opt-in-Präferenzen speichern (DB-Tabelle)
+- [x] Kredit-System mit Zinsen pro Tick (`/loan`)
+- [x] PR-Kampagnen (`/pr`)
+- [x] Admin-Commands (`/admin tick_skip`, `reset`, `spawn`, `event`)
+- [x] GitHub Pages Landing Page
+- [x] Docker / Docker Compose Setup
+
+---
+
+### 🚧 Teilweise implementiert
+
+| Feature | Status | Was fehlt |
+|---|---|---|
+| **`/notify` DM-Pings** | Präferenzen werden gespeichert | Bot sendet noch keine echten DM-Nachrichten |
+| **`/alliance`** | Slash Command registriert | Command-Handler, Entity, Service fehlen komplett |
+| **Event-Log Channel** | Config in `application.yml` | Bot postet noch nicht automatisch in den Channel |
+
+---
+
+### ⏳ Noch nicht implementiert
+
+- [ ] **Allianzen vollständig** — `/alliance war`, Alliance Chest, Mega-Projekte
+- [ ] **Aktienmarkt** — Anteile an Spieler-Firmen kaufen, Dividenden, Hostile Takeover
+- [ ] **Lieferverträge** — `/contract` zwischen Spielern
+- [ ] **Schwarzmarkt** — `/blackmarket` illegale Shortcuts mit Erwischt-Risiko
+- [ ] **Daily System** — `/daily` Streak, `/objectives` Tagesziele, `/briefing`
+- [ ] **Season-System** — monatliche Seasons mit Pass, XP und exklusiven Rewards
+- [ ] **Karten-System** — Rare/Legendary Mitarbeiter, `/cards`, `/pack`, `/trade`
+- [ ] **Kosmetik** — `/brand` (Firmen-Emoji, Farbe), `/title`, `/chronicle`
+- [ ] **Heist** — ko-operativer Angriff auf NPC-Mega-Corp
+- [ ] **Event-Log Channel** — automatische Posts (Insolvenz, Prestige, Sabotage)
+- [ ] **DM-Benachrichtigungen** — echte Discord DMs für `/notify`
+- [ ] **Persistente Cooldowns via Redis** — aktuell In-Memory (verloren bei Neustart)
+- [ ] **Balance-Tuning** — nach erstem Playtest
 
 ---
 
