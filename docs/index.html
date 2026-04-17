@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OMNIEXX — Discord Wirtschaftssimulation</title>
+  <meta name="description" content="Gründe eine Firma. Triff Entscheidungen. Sabotiere Konkurrenten. Dominiere den Markt. OMNIEXX ist ein Discord Bot Wirtschaftssimulationsspiel." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #080b10;
+      --surface:   #0e1420;
+      --border:    #1c2535;
+      --accent:    #00e5a0;
+      --accent2:   #e5a000;
+      --danger:    #e5004a;
+      --text:      #c8d4e8;
+      --muted:     #4a5a72;
+      --mono:      'Space Mono', monospace;
+      --display:   'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: .6;
+    }
+
+    /* ── GRID LINES ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: .25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── GLOW BLOBS ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,229,160,.12) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(229,160,0,.08) 0%, transparent 70%);
+      bottom: 10%; left: -150px;
+      animation: drift 16s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes drift {
+      from { transform: translate(0,0); }
+      to   { transform: translate(30px, 40px); }
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,11,16,.85);
+      backdrop-filter: blur(16px);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: .05em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent);
+      color: #000 !important;
+      padding: 6px 16px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 11px !important;
+      letter-spacing: .12em;
+    }
+    .nav-cta:hover { opacity: .85; color: #000 !important; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 160px 0 100px;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+    h1 {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: .95;
+      letter-spacing: -.02em;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+    }
+    h1 .strike {
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: var(--danger);
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 44px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #000;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .08em;
+      padding: 13px 24px;
+      border-radius: 3px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,229,160,.25);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: .06em;
+      padding: 13px 24px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+      background: transparent;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TERMINAL WIDGET ── */
+    .terminal {
+      margin-top: 70px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+    }
+    .terminal-bar {
+      background: #131b28;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #e5004a; }
+    .dot-y { background: #e5a000; }
+    .dot-g { background: #00e5a0; }
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .08em;
+    }
+    .terminal-body {
+      padding: 24px 28px;
+      font-size: 13px;
+      line-height: 2;
+      min-height: 240px;
+    }
+    .t-prompt { color: var(--muted); }
+    .t-cmd    { color: var(--accent); }
+    .t-out    { color: var(--text); }
+    .t-label  { color: var(--accent2); min-width: 140px; display: inline-block; }
+    .t-val    { color: #fff; }
+    .t-good   { color: var(--accent); }
+    .t-warn   { color: var(--accent2); }
+    .t-bad    { color: var(--danger); }
+    .t-sep    { color: var(--border); }
+    .blink {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--accent);
+      vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 10px 0;
+      margin: 80px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .ticker-track {
+      display: flex;
+      gap: 0;
+      animation: ticker 30s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 32px;
+      font-size: 11px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+    }
+    .ticker-item .dot-sm {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .ticker-item.warn .dot-sm { background: var(--accent2); }
+    .ticker-item.bad  .dot-sm { background: var(--danger); }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .section { padding: 80px 0; position: relative; z-index: 1; }
+    .section-label {
+      font-size: 10px;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: clamp(28px, 4vw, 44px);
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 56px;
+      line-height: 1.8;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .feat-card {
+      background: var(--surface);
+      padding: 32px 28px;
+      transition: background .2s;
+      position: relative;
+    }
+    .feat-card:hover { background: #121a28; }
+    .feat-icon {
+      font-size: 24px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .feat-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .feat-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .feat-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,229,160,.3);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .feat-tag.amber {
+      color: var(--accent2);
+      border-color: rgba(229,160,0,.3);
+    }
+    .feat-tag.red {
+      color: var(--danger);
+      border-color: rgba(229,0,74,.3);
+    }
+
+    /* ── MARKETS STRIP ── */
+    .markets {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 56px;
+    }
+    .market-pill {
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color .2s, color .2s;
+      cursor: default;
+    }
+    .market-pill:hover { border-color: var(--accent); color: var(--text); }
+    .market-pill.locked { opacity: .45; }
+    .market-pill .lock { font-size: 10px; }
+
+    /* ── COMMANDS TABLE ── */
+    .cmd-table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+    .cmd-table th {
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmd-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(28,37,53,.6);
+      font-size: 13px;
+      vertical-align: top;
+    }
+    .cmd-table tr:last-child td { border-bottom: none; }
+    .cmd-table tr:hover td { background: rgba(14,20,32,.6); }
+    .cmd-name {
+      font-family: var(--mono);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .cmd-desc { color: var(--muted); font-size: 12px; }
+    .cmd-cd {
+      font-size: 10px;
+      white-space: nowrap;
+      color: var(--accent2);
+      letter-spacing: .05em;
+    }
+    .cmd-cd.free { color: var(--muted); }
+
+    /* ── PRESTIGE SECTION ── */
+    .prestige-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .prestige-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .prestige-card.hard { border-color: rgba(229,0,74,.3); }
+    .prestige-card.soft { border-color: rgba(0,229,160,.3); }
+    .prestige-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .prestige-card.hard::after { background: var(--danger); }
+    .prestige-card.soft::after  { background: var(--accent); }
+    .p-head {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .p-desc { color: var(--muted); font-size: 12px; line-height: 1.9; }
+    .p-list { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .p-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .p-item::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+    .prestige-card.hard .p-item::before { color: var(--danger); }
+
+    /* ── STACK SECTION ── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .stack-item {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px;
+      background: var(--surface);
+      text-align: center;
+    }
+    .stack-logo { font-size: 28px; margin-bottom: 8px; }
+    .stack-name {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 13px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .stack-ver { font-size: 11px; color: var(--muted); }
+
+    /* ── INSTALL SECTION ── */
+    .install-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    .install-tab-bar {
+      background: #131b28;
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .install-tab {
+      padding: 10px 20px;
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      cursor: pointer;
+      border-right: 1px solid var(--border);
+      transition: color .2s, background .2s;
+    }
+    .install-tab.active {
+      color: var(--accent);
+      background: var(--surface);
+    }
+    .install-code {
+      background: var(--surface);
+      padding: 28px 32px;
+      display: none;
+    }
+    .install-code.active { display: block; }
+    .install-code pre {
+      font-size: 13px;
+      line-height: 2;
+      color: var(--text);
+      overflow-x: auto;
+    }
+    .ic { color: var(--muted); }
+    .ik { color: var(--accent2); }
+    .iv { color: var(--accent); }
+    .is { color: var(--danger); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--muted);
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--muted);
+      opacity: .5;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .feat-grid { grid-template-columns: 1fr 1fr; }
+      .prestige-grid { grid-template-columns: 1fr; }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      h1 { font-size: 42px; }
+    }
+    @media (max-width: 480px) {
+      .feat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">OMNI<span>EXX</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="#install">Setup</a>
+      <a href="https://github.com/Fabsi07/OMIEXX" target="_blank">GitHub</a>
+      <a href="https://github.com/Fabsi07/OMIEXX" target="_blank" class="nav-cta">↗ Repository</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Discord Wirtschaftssimulation</div>
+    <h1>
+      Gründe.<br>
+      Wachse.<br>
+      <em>Dominiere.</em>
+    </h1>
+    <p class="hero-sub">
+      OMNIEXX ist ein tickbasiertes Discord-Bot-Spiel. Baue ein Startup auf, sabotiere Konkurrenten, schalte Tech-Nodes frei und prestige-resette für immer stärkere Runs.
+    </p>
+    <div class="hero-actions">
+      <a href="https://github.com/Fabsi07/OMIEXX" target="_blank" class="btn-primary">
+        ↗ Auf GitHub ansehen
+      </a>
+      <a href="#install" class="btn-secondary">
+        → Setup-Anleitung
+      </a>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <span class="dot dot-r"></span>
+        <span class="dot dot-y"></span>
+        <span class="dot dot-g"></span>
+        <span class="terminal-title">omniexx-bot — /report</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt"># </span><span class="t-cmd">/report</span></div>
+        <div class="t-sep">────────────────────────────────────────</div>
+        <div><span class="t-label">🏢 Firma</span><span class="t-val">Fabsi Industries</span></div>
+        <div><span class="t-label">💰 Kapital</span><span class="t-good">$284.500</span></div>
+        <div><span class="t-label">📈 Umsatz/Tick</span><span class="t-good">+$6.200</span></div>
+        <div><span class="t-label">🔥 Burn Rate</span><span class="t-warn">$3.800</span></div>
+        <div><span class="t-label">😊 Morale</span><span class="t-val">████████░░  78/100</span></div>
+        <div><span class="t-label">⭐ Reputation</span><span class="t-val">█████████░  88/100</span></div>
+        <div><span class="t-label">💎 Valuation</span><span class="t-good">$812.400</span></div>
+        <div><span class="t-label">🔬 Research</span><span class="t-val">340 RP  (+3/Tick)</span></div>
+        <div><span class="t-label">🏆 Prestige</span><span class="t-val">Level 2  (×1.20)</span></div>
+        <div class="t-sep">────────────────────────────────────────</div>
+        <div><span class="t-prompt">$ </span><span class="blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="dot-sm"></span>Tick #47 verarbeitet</span>
+    <span class="ticker-item warn"><span class="dot-sm"></span>IronShield akquiriert NullByte</span>
+    <span class="ticker-item bad"><span class="dot-sm"></span>CartNova — Insolvenz</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Markt: AI/Deep Tech freischalten</span>
+    <span class="ticker-item warn"><span class="dot-sm"></span>Sabotage: Fake-PR erkannt</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Tier-A VC Deal abgeschlossen</span>
+    <span class="ticker-item bad"><span class="dot-sm"></span>Kartellbehörde ermittelt</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Achievement: Dreifach-Legende</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="dot-sm"></span>Tick #47 verarbeitet</span>
+    <span class="ticker-item warn"><span class="dot-sm"></span>IronShield akquiriert NullByte</span>
+    <span class="ticker-item bad"><span class="dot-sm"></span>CartNova — Insolvenz</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Markt: AI/Deep Tech freischalten</span>
+    <span class="ticker-item warn"><span class="dot-sm"></span>Sabotage: Fake-PR erkannt</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Tier-A VC Deal abgeschlossen</span>
+    <span class="ticker-item bad"><span class="dot-sm"></span>Kartellbehörde ermittelt</span>
+    <span class="ticker-item"><span class="dot-sm"></span>Achievement: Dreifach-Legende</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-label reveal">Spielsysteme</div>
+    <h2 class="reveal">Alles was ein gutes<br>Wirtschaftsspiel braucht.</h2>
+    <p class="section-sub reveal">Tick-basierter Loop, NPC-Konkurrenten, Tech-Tree, PvP — durchdacht aufgebaut auf Spring Boot und PostgreSQL.</p>
+
+    <div class="feat-grid reveal">
+      <div class="feat-card">
+        <span class="feat-icon">⏱️</span>
+        <div class="feat-title">Tick-System</div>
+        <div class="feat-desc">Alle 6h wird die Welt verarbeitet. KPIs, Gehälter, Events, NPC-Wachstum, Projekt-Fortschritt.</div>
+        <span class="feat-tag">Core Loop</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🤖</span>
+        <div class="feat-title">NPC-Konkurrenten</div>
+        <div class="feat-desc">3 Persönlichkeiten: Aggressiv (+8%/Tick), Konservativ (+2%), Innovativ (volatil). Spawnen automatisch beim Start.</div>
+        <span class="feat-tag">Lebendige Welt</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🔬</span>
+        <div class="feat-title">Tech-Tree</div>
+        <div class="feat-desc">15 Nodes in 3 Säulen: Operations, R&D, People. Research Points passiv pro Tick. 1 Node pro 24h.</div>
+        <span class="feat-tag amber">Progression</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🗡️</span>
+        <div class="feat-title">Sabotage</div>
+        <div class="feat-desc">4 Aktionen: Leak, Hiring War, Fake PR, Infra-Angriff. Backfire-Mechanik basierend auf Ziel-Reputation.</div>
+        <span class="feat-tag red">PvP</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">📋</span>
+        <div class="feat-title">30 Projekte</div>
+        <div class="feat-desc">6 pro Markt, hardcoded in Java. Risiko-Roll mit 4 Outcomes. Schalten Märkte, Rollen und Nodes frei.</div>
+        <span class="feat-tag">Content</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon">🌟</span>
+        <div class="feat-title">Prestige-System</div>
+        <div class="feat-desc">Hard Reset mit Legacy-Multiplikator oder Soft Prestige (IPO, Markt-Dominanz). 35 permanente Achievements.</div>
+        <span class="feat-tag amber">Endgame</span>
+      </div>
+    </div>
+
+    <!-- Märkte -->
+    <div class="section-label reveal" style="margin-top:64px">9 Märkte</div>
+    <h2 class="reveal" style="font-size:28px">Startmärkte und freischaltbare Bereiche</h2>
+    <div class="markets reveal">
+      <div class="market-pill">📱 Consumer Tech</div>
+      <div class="market-pill">💼 Enterprise SaaS</div>
+      <div class="market-pill">💳 Fintech</div>
+      <div class="market-pill">🛒 E-Commerce</div>
+      <div class="market-pill">🔐 Cybersecurity</div>
+      <div class="market-pill locked">🤖 AI / Deep Tech <span class="lock">🔒</span></div>
+      <div class="market-pill locked">🏥 Healthcare <span class="lock">🔒</span></div>
+      <div class="market-pill locked">🎮 Media & Gaming <span class="lock">🔒</span></div>
+      <div class="market-pill locked">🏛️ Government <span class="lock">🔒</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRESTIGE -->
+<section class="section">
+  <div class="container">
+    <div class="section-label reveal">Endgame</div>
+    <h2 class="reveal">Zwei Wege zum Prestige</h2>
+    <p class="section-sub reveal">Ab $1M Valuation. Beide Optionen stacken unbegrenzt über Runs.</p>
+    <div class="prestige-grid reveal">
+      <div class="prestige-card hard">
+        <div class="p-head">🔄 Hard Reset</div>
+        <p class="p-desc">Alles auf 0. Aber du wirst stärker zurückkommen.</p>
+        <div class="p-list">
+          <div class="p-item">Permanenter Legacy-Multiplikator +10%</div>
+          <div class="p-item">1 Mitarbeiter kommt mit (Generationen-Mechanik)</div>
+          <div class="p-item">Tutorial wird übersprungen</div>
+          <div class="p-item">Stackt unbegrenzt über Runs</div>
+        </div>
+      </div>
+      <div class="prestige-card soft">
+        <div class="p-head">📊 Soft Prestige</div>
+        <p class="p-desc">Kein Reset. Einmalige Mega-Aktion pro Run.</p>
+        <div class="p-list">
+          <div class="p-item">IPO: 25% der Valuation als Kapital + Rep +15</div>
+          <div class="p-item">Markt-Dominanz: alle Anteile +10%, Revenue +$5k/Tick</div>
+          <div class="p-item">1× pro Run nutzbar</div>
+          <div class="p-item">Kombinierbar mit Hard Reset</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMMANDS -->
+<section class="section" id="commands">
+  <div class="container">
+    <div class="section-label reveal">Slash Commands</div>
+    <h2 class="reveal">23 Commands. Alles per Discord.</h2>
+    <p class="section-sub reveal">Kein externes Interface — alles läuft direkt im Server.</p>
+
+    <table class="cmd-table reveal">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>Beschreibung</th>
+          <th>Cooldown</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="cmd-name">/start</td><td class="cmd-desc">Firma gründen — Markt + Startertyp per Discord Buttons wählen</td><td class="cmd-cd">Einmalig</td></tr>
+        <tr><td class="cmd-name">/report</td><td class="cmd-desc">Company Dashboard: Kapital, Umsatz, Burn Rate, Morale, Reputation, Valuation</td><td class="cmd-cd free">—</td></tr>
+        <tr><td class="cmd-name">/hire [rolle]</td><td class="cmd-desc">Mitarbeiter einstellen — zufälliger Name, gewürfelte Stats</td><td class="cmd-cd">3h</td></tr>
+        <tr><td class="cmd-name">/fire [name]</td><td class="cmd-desc">Mitarbeiter feuern — Morale Penalty, Reputation-Risiko bei Fluktuation</td><td class="cmd-cd">3h</td></tr>
+        <tr><td class="cmd-name">/project [aktion]</td><td class="cmd-desc">list / start / status / boost / cancel — 30 Projekte, Risiko-Roll</td><td class="cmd-cd">24h (start)</td></tr>
+        <tr><td class="cmd-name">/acquire [firma]</td><td class="cmd-desc">NPC-Firma übernehmen — 150% Valuation als Kaufpreis</td><td class="cmd-cd">8h</td></tr>
+        <tr><td class="cmd-name">/fundraise</td><td class="cmd-desc">VC-Pitch — Score aus Reputation, Revenue, Team, Tick + RNG</td><td class="cmd-cd">24h</td></tr>
+        <tr><td class="cmd-name">/expand [markt]</td><td class="cmd-desc">Neuen Marktbereich betreten — Eintrittspreis, marktspez. Projekte</td><td class="cmd-cd">24h</td></tr>
+        <tr><td class="cmd-name">/research [aktion]</td><td class="cmd-desc">tree / pick / status — 15 Nodes, 3 Säulen, 1 Node/Tag</td><td class="cmd-cd">24h (pick)</td></tr>
+        <tr><td class="cmd-name">/sabotage @user [aktion]</td><td class="cmd-desc">leak / hiring_war / fake_pr / infra — Backfire bei hoher Ziel-Reputation</td><td class="cmd-cd">6h</td></tr>
+        <tr><td class="cmd-name">/prestige</td><td class="cmd-desc">Hard Reset oder Soft Prestige per Button-Flow wählen</td><td class="cmd-cd">Ab $1M</td></tr>
+        <tr><td class="cmd-name">/admin [aktion]</td><td class="cmd-desc">tick_skip / reset / spawn / event — nur für konfigurierte Admin-IDs</td><td class="cmd-cd free">Admin</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STACK -->
+<section class="section">
+  <div class="container">
+    <div class="section-label reveal">Tech Stack</div>
+    <h2 class="reveal">Gebaut auf solidem Fundament.</h2>
+    <div class="stack-grid reveal">
+      <div class="stack-item">
+        <div class="stack-logo">☕</div>
+        <div class="stack-name">Java 21</div>
+        <div class="stack-ver">Virtual Threads</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🌱</div>
+        <div class="stack-name">Spring Boot</div>
+        <div class="stack-ver">3.3</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🐘</div>
+        <div class="stack-name">PostgreSQL</div>
+        <div class="stack-ver">16 + Flyway</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-logo">🎮</div>
+        <div class="stack-name">JDA</div>
+        <div class="stack-ver">5.0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INSTALL -->
+<section class="section" id="install">
+  <div class="container">
+    <div class="section-label reveal">Quickstart</div>
+    <h2 class="reveal">In 3 Schritten live.</h2>
+    <p class="section-sub reveal">Docker Compose übernimmt PostgreSQL, Flyway und den Bot in einem Befehl.</p>
+
+    <div class="install-box reveal">
+      <div class="install-tab-bar">
+        <div class="install-tab active" onclick="showTab('docker', this)">Docker</div>
+        <div class="install-tab" onclick="showTab('manual', this)">Lokal / Dev</div>
+        <div class="install-tab" onclick="showTab('env', this)">.env Config</div>
+      </div>
+
+      <div class="install-code active" id="tab-docker">
+        <pre><span class="ic"># 1. Repository klonen</span>
+git clone https://github.com/Fabsi07/OMIEXX.git
+cd OMIEXX
+
+<span class="ic"># 2. Konfigurieren</span>
+cp .env.example .env
+<span class="ic"># DISCORD_TOKEN und ADMIN_DISCORD_IDS in .env eintragen</span>
+
+<span class="ic"># 3. Starten</span>
+docker compose up -d
+
+<span class="ic"># Bot ist online. /start im Discord-Server eingeben.</span></pre>
+      </div>
+
+      <div class="install-code" id="tab-manual">
+        <pre><span class="ic"># PostgreSQL starten</span>
+docker run --name omniexx-db \
+  -e POSTGRES_DB=omniexx \
+  -e POSTGRES_USER=omniexx \
+  -e POSTGRES_PASSWORD=secret \
+  -p 5432:5432 -d postgres:16
+
+<span class="ic"># Umgebungsvariablen setzen</span>
+export DISCORD_TOKEN=<span class="iv">dein_token</span>
+export ADMIN_DISCORD_IDS=<span class="iv">deine_discord_id</span>
+
+<span class="ic"># Tick für Dev auf 1 Minute setzen</span>
+export TICK_INTERVAL_MS=<span class="iv">60000</span>
+
+<span class="ic"># Bot starten</span>
+./mvnw spring-boot:run</pre>
+      </div>
+
+      <div class="install-code" id="tab-env">
+        <pre><span class="ik">DISCORD_TOKEN</span>=<span class="iv">dein_bot_token</span>
+<span class="ik">DB_URL</span>=<span class="iv">jdbc:postgresql://localhost:5432/omniexx</span>
+<span class="ik">DB_USER</span>=<span class="iv">omniexx</span>
+<span class="ik">DB_PASSWORD</span>=<span class="iv">secret</span>
+
+<span class="ic"># Deine Discord-ID (Rechtsklick auf Profil → ID kopieren)</span>
+<span class="ik">ADMIN_DISCORD_IDS</span>=<span class="iv">123456789012345678</span>
+
+<span class="ic"># Tick-Interval: 6h = 21600000ms | Dev = 60000</span>
+<span class="ik">TICK_INTERVAL_MS</span>=<span class="iv">21600000</span>
+
+<span class="ic"># Optional: Channel-IDs für automatische Posts</span>
+<span class="ik">LEADERBOARD_CHANNEL_ID</span>=
+<span class="ik">EVENT_LOG_CHANNEL_ID</span>=</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">OMNI<span>EXX</span></div>
+      <div class="footer-links">
+        <a href="https://github.com/Fabsi07/OMIEXX" target="_blank">GitHub</a>
+        <a href="https://github.com/Fabsi07/OMIEXX/blob/main/docs/DATABASE.md" target="_blank">Datenbankschema</a>
+        <a href="https://github.com/Fabsi07/OMIEXX/issues" target="_blank">Issues</a>
+      </div>
+      <div class="footer-copy">Open Source · Spring Boot · JDA</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tab-Switcher
+  function showTab(id, el) {
+    document.querySelectorAll('.install-code').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('.install-tab').forEach(e => e.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    el.classList.add('active');
+  }
+
+  // Scroll-Reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
