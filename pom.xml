@@ -70,6 +70,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Actuator für Health/Metrics -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

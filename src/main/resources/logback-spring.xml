@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- Development: lesbares Console-Log -->
+  <springProfile name="default,dev">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss} %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <logger name="dev.omniexx" level="DEBUG"/>
+    <logger name="org.hibernate.SQL" level="WARN"/>
+  </springProfile>
+
+  <!-- Production: strukturiertes JSON Log -->
+  <springProfile name="prod">
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <customFields>{"app":"omniexx"}</customFields>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+    <logger name="dev.omniexx" level="INFO"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="net.dv8tion" level="WARN"/>
+  </springProfile>
+
+</configuration>
