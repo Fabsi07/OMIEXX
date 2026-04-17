@@ -4,6 +4,7 @@ import dev.omniexx.entity.Company;
 import dev.omniexx.repository.CompanyRepository;
 import dev.omniexx.service.CooldownService;
 import dev.omniexx.service.EventService;
+import dev.omniexx.service.NotificationService;
 import dev.omniexx.util.OmniexxEmbedBuilder;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -23,7 +24,8 @@ public class SabotageCommand {
 
     private final CompanyRepository companyRepo;
     private final CooldownService   cooldownService;
-    private final EventService      eventService;
+    private final EventService         eventService;
+    private final NotificationService  notificationService;
 
     private static final Duration COOLDOWN      = Duration.ofHours(6);
     private static final long     MIN_VALUATION = 5_000_000L; // $50k
@@ -162,6 +164,11 @@ public class SabotageCommand {
 
         companyRepo.save(attacker);
         companyRepo.save(victim);
+
+        // DM an Opfer senden
+        if (!backfire) {
+            notificationService.sabotaged(target, action, attacker.getName());
+        }
 
         if (!backfire) {
             eventService.log(attacker, "sabotage_sent",
