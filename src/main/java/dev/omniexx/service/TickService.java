@@ -262,12 +262,36 @@ public class TickService {
         company.setBankrupt(true);
 
         if (bankruptTicks >= 2) {
-            // Reset
-            eventService.log(company, "insolvency",
-                    "💀 Insolvenz — Firma aufgelöst",
-                    "2 Ticks im Notbetrieb ohne Rettung. Neustart mit Startbonus.",
+            // Insolvenz: Firma soft-deleten und neu starten
+            company.setBankrupt(false);
+            company.setBankruptTicks((short) 0);
+            company.setDeletedAt(java.time.OffsetDateTime.now());
+
+            // Neue Firma mit kleinem Startbonus anlegen
+            dev.omniexx.entity.Company newCompany = dev.omniexx.entity.Company.builder()
+                    .player(company.getPlayer())
+                    .name(company.getName())
+                    .market(company.getMarket())
+                    .starterType(company.getStarterType())
+                    .capital((long)(company.getStarterType().startCapital() * 1.2)) // +20% Insolvenz-Bonus
+                    .rpPerTick((short) company.getStarterType().startRpPerTick())
+                    .prestigeLevel(company.getPrestigeLevel())
+                    .legacyMultiplier(company.getLegacyMultiplier())
+                    .tutorialDone(true)
+                    .build();
+
+            dev.omniexx.entity.CompanyMarket cm = dev.omniexx.entity.CompanyMarket.builder()
+                    .company(newCompany)
+                    .market(newCompany.getMarket())
+                    .build();
+            newCompany.getMarkets().add(cm);
+            companyRepo.save(newCompany);
+            companyRepo.save(company);
+
+            eventService.log(newCompany, "insolvency",
+                    "💀 Insolvenz — Neustart mit Bonus",
+                    "2 Ticks Notbetrieb überstanden. Neustart mit +20% Startkapital.",
                     null);
-            // TODO: Reset-Flow inkl. Prestige-History
         } else {
             eventService.log(company, "insolvency",
                     "⚠️ Notbetrieb! Tick " + bankruptTicks + "/2",
