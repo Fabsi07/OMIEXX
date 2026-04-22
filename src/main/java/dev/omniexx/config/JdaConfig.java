@@ -19,13 +19,14 @@ public class JdaConfig {
     @Bean
     public JDA jda(SlashCommandListener slashCommandListener,
                    StartCommand startCommand,
-                   PrestigeCommand prestigeCommand) throws InterruptedException {
+                   PrestigeCommand prestigeCommand,
+                   WorkCommand workCommand) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.MESSAGE_CONTENT
                 )
-                .addEventListeners(slashCommandListener, startCommand, prestigeCommand)
+                .addEventListeners(slashCommandListener, startCommand, prestigeCommand, workCommand)
                 .build()
                 .awaitReady();
 
@@ -36,6 +37,10 @@ public class JdaConfig {
                 Commands.slash("start", "Gründe deine Firma und starte ins Spiel"),
                 Commands.slash("report", "Zeigt dein aktuelles Company Dashboard"),
                 Commands.slash("help", "Alle verfügbaren Commands mit Erklärung"),
+
+                // Work-System
+                Commands.slash("work",   "Work-Session starten — treffe Entscheidungen und verdiene Belohnungen"),
+                Commands.slash("crunch", "Intensiv arbeiten — doppeltes Risiko, doppelte Belohnung (60min CD)"),
 
                 // Phase 2 — Core Loop
                 Commands.slash("log", "Letzte Events deiner Firma"),

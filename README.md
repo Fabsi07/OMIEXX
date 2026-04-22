@@ -29,6 +29,9 @@ Baue ein Startup auf, stelle ein Team ein, forsche im Tech-Tree, akquiriere NPC-
 
 ## Features
 
+**Work-System**
+Jede Entscheidung zählt. Mit `/work` bekommst du ein zufälliges Business-Szenario mit 2–3 Optionen. Das Ergebnis ist variabel — manchmal ein Jackpot, manchmal ein Rückschlag. Aktives Spielen macht deine Firma deutlich stärker als passives Warten. 90-Minuten-Cooldown.
+
 **Startup-Simulation**
 Gründe eine Firma in einem von 5 Märkten, wähle deinen Startertyp und manage 6 KPIs: Kapital, Umsatz/Tick, Burn Rate, Morale, Marktanteil und Reputation.
 
@@ -81,6 +84,8 @@ Hard Reset mit dauerhaftem Legacy-Multiplikator (+10% pro Run) oder Soft Prestig
 | `/achievements` | Alle Abzeichen anzeigen |
 | `/market` | Server-Leaderboard nach Valuation |
 | `/profile [firma]` | Öffentliches Firmenprofil |
+| `/work` | Work-Session starten — Szenario mit 2–3 Entscheidungen, variable Belohnung (90min CD) |
+| `/crunch` | Intensiv arbeiten — doppeltes Risiko, doppelte Belohnung (60min CD) |
 | `/log` | Letzte Events deiner Firma |
 | `/pause` | Firma 48h einfrieren (2× / Monat) |
 | `/help` | Alle Commands mit Status |
