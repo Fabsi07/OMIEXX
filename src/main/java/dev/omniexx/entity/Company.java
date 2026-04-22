@@ -132,6 +132,21 @@ public class Company {
     @Builder.Default
     private Boolean tutorialDone = false;
 
+    // ---- Work-Streak ----
+    @Column(name = "work_streak", nullable = false)
+    @Builder.Default
+    private Integer workStreak = 0;
+
+    @Column(name = "work_streak_date")
+    private java.time.LocalDate workStreakDate;
+
+    @Column(name = "total_work_count", nullable = false)
+    @Builder.Default
+    private Integer totalWorkCount = 0;
+
+    @Column(name = "last_work_at")
+    private java.time.OffsetDateTime lastWorkAt;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

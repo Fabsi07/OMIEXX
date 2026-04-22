@@ -56,7 +56,12 @@ public class OmniexxEmbedBuilder {
                 .addField("📊 Markt",          company.getMarket().getDisplayName(), true)
                 .addField("🎯 Tick",           "#" + company.getTickCount(), true)
                 .addField("🏆 Prestige",       "Level " + company.getPrestigeLevel() + "  (×" + company.getLegacyMultiplier() + ")", true)
-                .setFooter("OMNIEXX • " + company.getStarterType().getDisplayName());
+                .addField("🔥 Work-Streak",
+                        company.getWorkStreak() > 0
+                            ? company.getWorkStreak() + " Tage  (" + company.getTotalWorkCount() + " Sessions total)"
+                            : "Noch keine Work-Sessions",
+                        false)
+                .setFooter("OMNIEXX • " + company.getStarterType().getDisplayName() + "  •  /work alle 20s!");
     }
 
     /** Konvertiert Cents zu lesbarem String: 1000000 → $10.000,00 */

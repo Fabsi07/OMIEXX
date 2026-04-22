@@ -27,7 +27,7 @@ public class ExpandCommand {
     private final CooldownService   cooldownService;
     private final EventService      eventService;
 
-    private static final Duration COOLDOWN = Duration.ofHours(24);
+    private static final Duration COOLDOWN = Duration.ofHours(12);
 
     // Eintrittspreis pro Markt in Cents
     private static final Map<Market, Long> ENTRY_COST = Map.of(

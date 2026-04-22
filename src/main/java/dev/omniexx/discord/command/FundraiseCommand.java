@@ -24,7 +24,7 @@ public class FundraiseCommand {
     private final CooldownService   cooldownService;
     private final EventService      eventService;
 
-    private static final Duration COOLDOWN      = Duration.ofHours(24);
+    private static final Duration COOLDOWN      = Duration.ofHours(6);
     private static final int      MIN_TICK      = 5;
     private static final Random   RANDOM        = new Random();
 

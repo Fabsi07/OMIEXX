@@ -21,7 +21,7 @@ public class PrCommand {
     private final CooldownService   cooldownService;
     private final EventService      eventService;
 
-    private static final Duration COOLDOWN = Duration.ofHours(6);
+    private static final Duration COOLDOWN = Duration.ofMinutes(5);
     private static final long     COST_POS = 300_000L;
     private static final long     COST_NEG = 150_000L;
 

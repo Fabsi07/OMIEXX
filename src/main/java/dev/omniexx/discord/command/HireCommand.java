@@ -24,7 +24,7 @@ public class HireCommand {
     private final CompanyService    companyService;
     private final CooldownService   cooldownService;
 
-    private static final Duration COOLDOWN = Duration.ofHours(3);
+    private static final Duration COOLDOWN = Duration.ofMinutes(3);
     private static final int MAX_EMPLOYEES = 20;
 
     // Basis-Rollen — immer verfügbar

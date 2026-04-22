@@ -23,7 +23,7 @@ public class InvestCommand {
     private final CooldownService   cooldownService;
     private final EventService      eventService;
 
-    private static final Duration COOLDOWN = Duration.ofHours(4);
+    private static final Duration COOLDOWN = Duration.ofSeconds(90);
 
     public void handle(SlashCommandInteractionEvent event) {
         String discordId = event.getUser().getId();

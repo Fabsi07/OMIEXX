@@ -63,6 +63,16 @@ public class EventLogService {
                 .build());
     }
 
+    public void postJackpot(Company company, long capital) {
+        post(new EmbedBuilder()
+                .setColor(new Color(0xF1C40F))
+                .setTitle("🎰 JACKPOT — " + company.getName())
+                .setDescription("**" + company.getName() + "** hat soeben einen riesigen Deal gelandet!")
+                .addField("Gewinn", "+" + dev.omniexx.util.OmniexxEmbedBuilder.formatMoney(capital), true)
+                .addField("Work-Streak", company.getWorkStreak() + " Tage", true)
+                .build());
+    }
+
     public void postSabotage(Company attacker, Company target, String action, boolean backfire) {
         String title = backfire ? "💥 Sabotage-Backfire!" : "🗡️ Sabotage enthüllt";
         String desc = backfire

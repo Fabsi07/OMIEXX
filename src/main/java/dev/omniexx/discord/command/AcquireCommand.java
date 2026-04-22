@@ -27,7 +27,7 @@ public class AcquireCommand {
     private final CooldownService      cooldownService;
     private final EventService         eventService;
 
-    private static final Duration COOLDOWN      = Duration.ofHours(8);
+    private static final Duration COOLDOWN      = Duration.ofHours(2);
     private static final int      MIN_EMPLOYEES = 3;
     private static final int      KARTELL_LIMIT = 4; // ab hier Kartellbehörde möglich
 

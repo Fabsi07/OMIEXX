@@ -23,7 +23,7 @@ public class FireCommand {
     private final CompanyService    companyService;
     private final CooldownService   cooldownService;
 
-    private static final Duration COOLDOWN = Duration.ofHours(3);
+    private static final Duration COOLDOWN = Duration.ofMinutes(3);
 
     public void handle(SlashCommandInteractionEvent event) {
         String discordId = event.getUser().getId();

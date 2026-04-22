@@ -27,7 +27,7 @@ public class SabotageCommand {
     private final EventService         eventService;
     private final NotificationService  notificationService;
 
-    private static final Duration COOLDOWN      = Duration.ofHours(6);
+    private static final Duration COOLDOWN      = Duration.ofMinutes(5);
     private static final long     MIN_VALUATION = 5_000_000L; // $50k
     private static final Random   RANDOM        = new Random();
     private static final Set<String> VALID_ACTIONS = Set.of("leak", "hiring_war", "fake_pr", "infra");

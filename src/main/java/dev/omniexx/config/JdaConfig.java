@@ -34,6 +34,7 @@ public class JdaConfig {
         jda.updateCommands().addCommands(
 
                 // Phase 1 — Foundation
+                Commands.slash("work", "Arbeite an deiner Firma — Entscheidungs-Szenario (20s Cooldown)"),
                 Commands.slash("start", "Gründe deine Firma und starte ins Spiel"),
                 Commands.slash("report", "Zeigt dein aktuelles Company Dashboard"),
                 Commands.slash("help", "Alle verfügbaren Commands mit Erklärung"),
