@@ -75,6 +75,17 @@ public class EventLogService {
                 .build());
     }
 
+    public void postWorkJackpot(Company company, String scenarioTitle, long capitalGained) {
+        post(new EmbedBuilder()
+                .setColor(new Color(0xF1C40F))
+                .setTitle("💎 JACKPOT — " + company.getName())
+                .setDescription("**" + company.getName() + "** hat in einer Work-Session " +
+                                dev.omniexx.util.OmniexxEmbedBuilder.formatMoney(capitalGained) +
+                                " verdient!
+*" + scenarioTitle + "*")
+                .build());
+    }
+
     private void post(net.dv8tion.jda.api.entities.MessageEmbed embed) {
         if (eventLogChannelId == null || eventLogChannelId.isBlank()) return;
         try {

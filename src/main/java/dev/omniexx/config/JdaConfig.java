@@ -19,13 +19,14 @@ public class JdaConfig {
     @Bean
     public JDA jda(SlashCommandListener slashCommandListener,
                    StartCommand startCommand,
-                   PrestigeCommand prestigeCommand) throws InterruptedException {
+                   PrestigeCommand prestigeCommand,
+                   WorkCommand workCommand) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(token)
                 .enableIntents(
                         GatewayIntent.GUILD_MESSAGES,
                         GatewayIntent.MESSAGE_CONTENT
                 )
-                .addEventListeners(slashCommandListener, startCommand, prestigeCommand)
+                .addEventListeners(slashCommandListener, startCommand, prestigeCommand, workCommand)
                 .build()
                 .awaitReady();
 
@@ -33,6 +34,10 @@ public class JdaConfig {
         jda.updateCommands().addCommands(
 
                 // Phase 1 — Foundation
+                // ── Energie & Work ──
+                Commands.slash("work", "Energie verbrauchen und Kapital verdienen (Kern-Loop)"),
+                Commands.slash("energy", "Energie-Stand und Countdown anzeigen"),
+                // ── Foundation ──
                 Commands.slash("start", "Gründe deine Firma und starte ins Spiel"),
                 Commands.slash("report", "Zeigt dein aktuelles Company Dashboard"),
                 Commands.slash("help", "Alle verfügbaren Commands mit Erklärung"),

@@ -36,6 +36,9 @@ public class SlashCommandListener extends ListenerAdapter {
     private final NotifyCommand       notifyCommand;
     private final AdminCommand        adminCommand;
     private final LoanRepayCommand    loanRepayCommand;
+    // Energie-System
+    private final WorkCommand         workCommand;
+    private final EnergyCommand       energyCommand;
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -44,39 +47,42 @@ public class SlashCommandListener extends ListenerAdapter {
 
         try {
             switch (cmd) {
-                // Phase 1 — Foundation
+                // ── Energie & Work ──
+                case "work"         -> workCommand.handle(event);
+                case "energy"       -> energyCommand.handle(event);
+                // ── Phase 1 ──
                 case "start"        -> startCommand.handle(event);
                 case "report"       -> reportCommand.handle(event);
                 case "help"         -> helpCommand.handle(event);
-                // Phase 2 — Core Loop
+                // ── Phase 2 ──
                 case "log"          -> logCommand.handle(event);
                 case "market"       -> marketCommand.handle(event);
                 case "notify"       -> notifyCommand.handle(event);
                 case "pause"        -> pauseCommand.handle(event);
                 case "invest"       -> investCommand.handle(event);
                 case "pr"           -> prCommand.handle(event);
-                // Phase 3 — Mitarbeiter
+                // ── Phase 3 ──
                 case "team"         -> teamCommand.handle(event);
                 case "hire"         -> hireCommand.handle(event);
                 case "fire"         -> fireCommand.handle(event);
-                // Phase 4 — Projekte
+                // ── Phase 4 ──
                 case "project"      -> projectCommand.handle(event);
-                // Phase 5 — NPC-Welt
+                // ── Phase 5 ──
                 case "acquire"      -> acquireCommand.handle(event);
                 case "fundraise"    -> fundraiseCommand.handle(event);
                 case "expand"       -> expandCommand.handle(event);
                 case "profile"      -> profileCommand.handle(event);
-                // Phase 6 — Tech-Tree
+                // ── Phase 6 ──
                 case "research"     -> researchCommand.handle(event);
-                // Phase 7 — PvP
+                // ── Phase 7 ──
                 case "sabotage"     -> sabotageCommand.handle(event);
-                // Phase 8 — Prestige
+                // ── Phase 8 ──
                 case "prestige"     -> prestigeCommand.handle(event);
                 case "legacy"       -> legacyCommand.handle(event);
-                // Phase 9 — Polish
+                // ── Phase 9 ──
                 case "achievements" -> achievementsCommand.handle(event);
-                case "admin"        -> adminCommand.handle(event);
                 case "loanrepay"    -> loanRepayCommand.handle(event);
+                case "admin"        -> adminCommand.handle(event);
 
                 default -> event.reply("⚙️ **/" + cmd + "** ist noch nicht implementiert.")
                         .setEphemeral(true).queue();

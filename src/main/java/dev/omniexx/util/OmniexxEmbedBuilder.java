@@ -53,6 +53,7 @@ public class OmniexxEmbedBuilder {
                 .addField("💎 Valuation",      formatMoney(company.calculateValuation()), true)
                 .addField("👥 Team",           activeEmployees + " Mitarbeiter", true)
                 .addField("🔬 Research",       company.getResearchPoints() + " RP  (+"+company.getRpPerTick()+"/Tick)", true)
+                .addField("⚡ Tipp",           "Nutze `/work` um aktiv Kapital zu verdienen!", true)
                 .addField("📊 Markt",          company.getMarket().getDisplayName(), true)
                 .addField("🎯 Tick",           "#" + company.getTickCount(), true)
                 .addField("🏆 Prestige",       "Level " + company.getPrestigeLevel() + "  (×" + company.getLegacyMultiplier() + ")", true)

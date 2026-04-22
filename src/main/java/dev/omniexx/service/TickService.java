@@ -98,8 +98,11 @@ public class TickService {
         }
 
         // 3. Revenue gutschreiben (mit Legacy-Multiplikator)
-        long revenue = (long) (company.getRevenuePerTick() *
+        // Passive Rate: 30% des normalen Revenues für inaktive Firmen
+        // Aktives Spielen (/work) gibt 100% über Work-Outcomes
+        long baseRevenue = (long) (company.getRevenuePerTick() *
                 company.getLegacyMultiplier().doubleValue());
+        long revenue = (long) (baseRevenue * 0.30); // Passive = 30%
         capital += revenue;
 
         // 4. Research Points
