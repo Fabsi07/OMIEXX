@@ -1,11 +1,15 @@
 package dev.omniexx.discord.listener;
 
 import dev.omniexx.discord.command.*;
+import dev.omniexx.service.CooldownService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -36,6 +40,22 @@ public class SlashCommandListener extends ListenerAdapter {
     private final NotifyCommand       notifyCommand;
     private final AdminCommand        adminCommand;
     private final LoanRepayCommand    loanRepayCommand;
+    private final CooldownService     cooldownService;
+
+    /**
+     * Global Slash-Cooldowns (pro User + Command-Key).
+     * Detail-Commands wie /project start oder /research pick haben weiterhin eigene Cooldowns in ihren Command-Klassen.
+     */
+    private static final Map<String, Duration> SLASH_COOLDOWNS = Map.of(
+            "report", Duration.ofSeconds(20),
+            "team", Duration.ofSeconds(20),
+            "market", Duration.ofSeconds(30),
+            "profile", Duration.ofSeconds(30),
+            "log", Duration.ofSeconds(15),
+            "help", Duration.ofSeconds(10),
+            "legacy", Duration.ofSeconds(60),
+            "achievements", Duration.ofSeconds(60)
+    );
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -43,6 +63,18 @@ public class SlashCommandListener extends ListenerAdapter {
         log.debug("/{} von {}", cmd, event.getUser().getName());
 
         try {
+            Duration cooldown = SLASH_COOLDOWNS.get(cmd);
+            if (cooldown != null) {
+                String key = "slash_" + cmd;
+                Duration remaining = cooldownService.checkAndSet(event.getUser().getId(), key, cooldown);
+                if (remaining != null) {
+                    event.reply("⏳ **/" + cmd + "** ist noch für **" + CooldownService.format(remaining) + "** auf Cooldown.")
+                            .setEphemeral(true)
+                            .queue();
+                    return;
+                }
+            }
+
             switch (cmd) {
                 // Phase 1 — Foundation
                 case "start"        -> startCommand.handle(event);
